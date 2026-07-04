@@ -1,0 +1,3255 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Phản Xạ Tiếng Trung<\/title>
+    <link rel="icon" href="https://i.ibb.co/Jjzw8bKR/Logo-Web.jpg" type="image/jpeg">
+    <link rel="shortcut icon" href="https://i.ibb.co/Jjzw8bKR/Logo-Web.jpg" type="image/jpeg">
+    <meta property="og:title" content="Phản Xạ Tiếng Trung">
+    <meta property="og:description" content="Nền tảng học và thi HSK phản xạ">
+    <meta property="og:image" content="https://i.ibb.co/YT05HzDk/Hinh-Web.jpg">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://i.ibb.co/YT05HzDk/Hinh-Web.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"><\/script>
+    <script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js"><\/script>
+    <script>
+        const GLOBAL_PRICING = [{"id":"1m","name":"Gói 1 Tháng","price":99000,"oldPrice":300000,"duration":1,"isPopular":false,"order":1},{"id":"3m","name":"Gói 3 Tháng","price":250000,"oldPrice":900000,"duration":3,"isPopular":false,"order":2},{"id":"6m","name":"Gói 6 Tháng","price":500000,"oldPrice":1800000,"duration":6,"isPopular":false,"order":3},{"id":"12m","name":"Gói 12 Tháng","price":800000,"oldPrice":3600000,"duration":12,"isPopular":true,"order":4}];
+    <\/script>
+    
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"><\/script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"><\/script>
+    
+    <style>
+    :root {
+        --p: #1a73e8;
+        --s: #0f9d58;
+        --w: #d93025;
+        --bg: #f8f9fa;
+        --box-bg: #ffffff;
+        --text-main: #202124;
+        --text-muted: #5f6368;
+        --btn-hover: rgba(26, 115, 232, 0.08);
+    }
+
+     
+    body.theme-gamified {
+        --p: #58cc02;
+        --s: #58cc02;
+        --w: #ff4b4b;
+        --bg: #ffffff;
+        --box-bg: #fff;
+        --text-main: #3c3c3c;
+    }
+
+    body.theme-gamified #game-box {
+        border: 2px solid #e5e5e5;
+        border-bottom-width: 6px;
+        box-shadow: none;
+        border-radius: 24px;
+    }
+
+    body.theme-gamified button {
+        border-radius: 16px;
+        border-bottom: 4px solid rgba(0, 0, 0, 0.15);
+    }
+
+    body.theme-gamified button:active {
+        border-bottom-width: 0;
+        transform: translateY(4px);
+    }
+
+    body.theme-gamified input {
+        border-width: 2px;
+        border-bottom-width: 4px;
+        border-radius: 16px;
+    }
+
+     
+    body.theme-academic {
+        --p: #2c3e50;
+        --s: #27ae60;
+        --w: #c0392b;
+        --bg: #faf9f6;
+        --box-bg: #ffffff;
+        --text-main: #2c3e50;
+        font-family: 'Mali', cursive;
+        font-size: 1.1rem;
+    }
+
+    body.theme-academic #game-box {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        border-radius: 8px;
+        border-top: 6px solid var(--p);
+    }
+
+    body.theme-academic h1 {
+        font-family: 'Mali', cursive;
+        font-weight: 700;
+    }
+
+    body.theme-academic button,
+    body.theme-academic input {
+        border-radius: 4px;
+        font-family: 'Mali', cursive;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+     
+    body.theme-dark {
+        --p: #8ab4f8;
+        --s: #81c995;
+        --w: #f28b82;
+        --bg: #202124;
+        --box-bg: #292a2d;
+        --text-main: #e8eaed;
+        --text-muted: #9aa0a6;
+        --btn-hover: rgba(138, 180, 248, 0.08);
+    }
+
+    body.theme-dark #game-box {
+        border: 1px solid #3c4043;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    body.theme-dark .btn-lvl {
+        background: #292a2d;
+        border-color: #5f6368;
+        color: #e8eaed;
+    }
+
+    body.theme-dark .btn-lvl:hover {
+        background: var(--btn-hover);
+        border-color: var(--p);
+        color: var(--p);
+    }
+
+    body.theme-dark input {
+        background: #202124;
+        color: #e8eaed;
+        border-color: #5f6368;
+    }
+
+    body.theme-dark input:disabled {
+        background: #3c4043;
+        color: #9aa0a6;
+    }
+
+    body.theme-dark select,
+    body.theme-dark .audio-controls {
+        background: #202124;
+        color: #e8eaed;
+        border-color: #5f6368;
+    }
+
+    body.theme-dark .plan-option {
+        background: #292a2d;
+        border-color: #5f6368;
+    }
+
+    body.theme-dark .ck-info-box {
+        background: #202124;
+        border-color: #5f6368;
+        color: #e8eaed;
+    }
+
+    body.theme-dark #user-profile,
+    body.theme-dark #btn-login-show,
+    body.theme-dark #theme-select,
+    body.theme-dark .modal-content,
+    body.theme-dark .upgrade-modal-box {
+        background: #292a2d;
+        color: #e8eaed;
+        border-color: #5f6368;
+    }
+
+    body.theme-dark .btn-home {
+        border-color: #5f6368;
+        color: #9aa0a6;
+    }
+
+    body.theme-dark .btn-home:hover {
+        background: #3c4043;
+    }
+
+    body.theme-dark .btn-back,
+    body.theme-dark .btn-hint {
+        color: #e8eaed;
+    }
+
+    body.theme-dark .tab-btn {
+        color: #9aa0a6;
+    }
+
+    body.theme-dark .tab-btn.active {
+        color: var(--p);
+    }
+
+    body.theme-dark .btn-close-modal {
+        background: transparent;
+        color: #e8eaed;
+    }
+
+    body.theme-dark .btn-close-modal:hover {
+        background: #ff4757;
+        color: white;
+    }
+
+    body {
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100vh;
+        height: 100dvh;
+        width: 100vw;
+        overflow: hidden;
+        margin: 0;
+        background: var(--bg);
+        color: var(--text-main);
+        overscroll-behavior-y: none;
+    }
+
+    #game-box {
+        background: var(--box-bg);
+        padding: 2.5rem;
+        border-radius: 24px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        width: 95%;
+        max-width: 650px;
+        text-align: center;
+        margin: auto;
+        transition: all 0.3s ease;
+        flex: 1;
+        min-height: 0;
+        max-height: calc(100% - 20px);
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    @media (max-width: 600px) {
+        #game-box {
+            padding: 1rem;
+            margin: auto;
+            border-radius: 16px;
+            width: 98%;
+        }
+        h1 { font-size: 1.4rem; margin-bottom: 0; }
+        .header-info { margin-bottom: 5px; font-size: 0.8rem; }
+        #vi-text { font-size: 1.3rem; min-height: 3rem; margin: 10px 0; }
+        #result-box { padding: 12px; margin-bottom: 12px; font-size: 1.1rem; }
+        input { padding: 12px; font-size: 1.1rem; margin-bottom: 15px; }
+        .word-block { font-size: 1.15rem; padding: 6px 10px; }
+        #construction-target { min-height: 48px; padding: 6px; margin-bottom: 10px; }
+        #construction-pool { min-height: 50px; }
+        .audio-controls { margin-bottom: 15px; padding: 6px 10px; font-size: 0.8rem; }
+        .btns { gap: 8px; margin-bottom: 15px; }
+        button { padding: 12px; font-size: 0.9rem; }
+        #btn-main { padding: 14px; font-size: 1rem; }
+    }
+
+    h1 {
+        font-size: 2rem;
+        color: var(--p);
+        margin-bottom: 5px;
+        font-weight: 700;
+    }
+
+    .subtitle {
+        color: var(--text-muted);
+        font-size: 1rem;
+        margin-bottom: 30px;
+    }
+
+    .lvl-btns {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .btn-lvl {
+        padding: 18px;
+        border: 2px solid var(--p);
+        border-radius: 12px;
+        background: white;
+        color: var(--p);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-lvl:hover {
+        background: var(--p);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(26, 115, 232, 0.2);
+    }
+
+    .header-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        align-items: center;
+    }
+
+    #progress-container {
+        width: 100%;
+        height: 10px;
+        background: #eee;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .leaderboard-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fdf2e9;
+        padding: 8px 15px;
+        border-radius: 10px;
+        border: 1px solid #fdebd0;
+        transition: 0.2s;
+    }
+
+    .leaderboard-exp {
+        font-weight: bold;
+        color: #d35400;
+    }
+
+    body.theme-dark .leaderboard-item {
+        background: #2d2e31;
+        border-color: #3c4043;
+    }
+
+    body.theme-dark .leaderboard-exp {
+        color: #f39c12;
+    }
+
+    #progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--s), #2ecc71);
+        box-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
+        transition: width 0.4s ease-out;
+    }
+
+    #vi-text {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 15px 0;
+        color: var(--p);
+        min-height: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.4;
+    }
+
+    #result-box {
+        font-size: 1.35rem;
+        padding: 18px;
+        margin-bottom: 20px;
+        border-radius: 16px;
+        font-weight: 500;
+        display: none;
+        white-space: pre-wrap;
+        line-height: 1.5;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+        transform: translateY(10px);
+        opacity: 0;
+        animation: slideUp 0.3s forwards;
+    }
+
+    @keyframes slideUp {
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .res-correct {
+        background: linear-gradient(135deg, #f0fff4, #d4edda);
+        color: #155724;
+        border: 2px solid #c3e6cb;
+    }
+
+    .res-wrong {
+        background: linear-gradient(135deg, #fff5f5, #f8d7da);
+        color: #721c24;
+        border: 2px solid #f5c6cb;
+    }
+
+
+
+    input {
+        width: 100%;
+        padding: 16px;
+        font-size: 1.3rem;
+        border: 2px solid #ddd;
+        border-radius: 12px;
+        box-sizing: border-box;
+        outline: none;
+        text-align: center;
+        margin-bottom: 15px;
+        transition: 0.2s;
+    }
+
+    input:focus {
+        border-color: var(--p);
+        cursor: pointer;
+        color: var(--text-muted);
+    }
+
+    input:disabled {
+        background: #f9f9f9;
+        color: #2c3e50;
+        font-weight: bold;
+    }
+
+    .tab-btn.active {
+        border-bottom: 2px solid var(--p);
+        color: var(--text-main);
+        font-weight: bold;
+    }
+
+    .btns {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    button {
+        flex: 1;
+        padding: 15px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        color: white;
+        font-size: 1rem;
+        min-width: 120px;
+        transition: all 0.2s;
+    }
+
+    button:hover {
+        filter: brightness(1.1);
+    }
+
+    button:active {
+        transform: scale(0.98);
+    }
+
+    .btn-back {
+        background: #9aa0a6;
+        color: #202124;
+    }
+
+    .btn-hint {
+        background: #fbbc04;
+        color: #202124;
+    }
+
+    .btn-main {
+        background: var(--p);
+    }
+
+    .btn-home {
+        background: transparent;
+        border: 1px solid #dadce0;
+        color: var(--text-muted);
+        width: 100%;
+        border-radius: 12px;
+    }
+
+    .btn-home:hover {
+        background: #f1f3f4;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .audio-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 8px;
+        gap: 8px;
+    }
+
+    .audio-controls select {
+        flex: 1;
+        max-width: 140px;
+        padding: 6px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        outline: none;
+    }
+
+    .audio-controls input[type=range] {
+        flex: 1;
+        margin: 0;
+        padding: 0;
+        border: none;
+        height: auto;
+        max-width: 80px;
+    }
+
+    .btn-audio {
+        background: #17a2b8;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-size: 1rem;
+        flex: 0;
+        min-width: auto;
+    }
+
+    @keyframes shake {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        50% { transform: translateX(5px); }
+        75% { transform: translateX(-5px); }
+        100% { transform: translateX(0); }
+    }
+
+    .shake {
+        animation: shake 0.4s;
+    }
+
+    .wrong-flash {
+        background-color: #f8d7da !important;
+        border-color: #f5c6cb !important;
+    }
+
+    #loading-screen {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--p);
+        padding: 40px;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--p);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .stats-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--text-muted);
+    }
+
+    .combo-badge {
+        background: #ffa502;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        margin-left: 8px;
+        opacity: 0;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transform: scale(0);
+        display: inline-block;
+    }
+
+    @keyframes popOut {
+        0% { transform: scale(1.1); }
+        50% { transform: scale(1.4); }
+        100% { transform: scale(1.1); }
+    }
+
+    .combo-badge.pop {
+        animation: popOut 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .combo-badge.active {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    .input-group {
+        position: relative;
+        margin-bottom: 15px;
+    }
+
+    .input-group input {
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 25px;
+        border-radius: 20px;
+        text-align: center;
+        position: relative;
+        width: 250px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-close-modal {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 28px;
+        height: 28px;
+        min-width: auto;
+        padding: 0;
+        background: transparent;
+        border: none;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #5f6368;
+        transition: all 0.2s;
+        z-index: 100;
+    }
+
+    .btn-close-modal:hover {
+        background: #ff4757;
+        color: white;
+        transform: scale(1.1);
+    }
+
+    #online-counter {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        color: var(--p);
+        display: none;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .pulse-dot {
+        width: 10px;
+        height: 10px;
+        background-color: #2ecc71;
+        border-radius: 50%;
+        display: inline-block;
+        animation: dotPulse 1.5s infinite;
+    }
+
+    @keyframes dotPulse {
+        0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+        70% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+    }
+
+     
+    .zh-word {
+        display: inline;
+        cursor: pointer;
+        border-radius: 4px;
+        padding: 0;
+        transition: background 0.15s ease, color 0.15s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .zh-word:hover {
+        background: rgba(26, 115, 232, 0.12);
+        color: var(--p);
+    }
+
+    .zh-word.active-word {
+        background: rgba(26, 115, 232, 0.2);
+        color: var(--p);
+    }
+
+     
+    #word-popup {
+        position: fixed;
+        z-index: 9999;
+        background: var(--box-bg);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.10);
+        border: 1px solid rgba(26, 115, 232, 0.15);
+        padding: 0;
+        min-width: 180px;
+        max-width: 260px;
+        opacity: 0;
+        transform: translateY(6px) scale(0.97);
+        transition: opacity 0.18s ease, transform 0.18s ease;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    #word-popup.visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+    }
+
+    #word-popup-header {
+        background: linear-gradient(135deg, var(--p), #6c3de8);
+        padding: 12px 16px 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    #word-popup-hanzi {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: white;
+        line-height: 1;
+        letter-spacing: 2px;
+    }
+
+    #word-popup-speak {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        flex: none;
+        cursor: pointer;
+        color: white;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+        padding: 0;
+    }
+
+    #word-popup-speak:hover,
+    #word-popup-speak:active {
+        background: rgba(255, 255, 255, 0.35);
+    }
+
+    #word-popup-body {
+        padding: 12px 16px 14px;
+    }
+
+    #word-popup-pinyin {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #e67e22;
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+    }
+
+    #word-popup-meaning {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-main);
+        line-height: 1.5;
+    }
+
+    #word-popup-loading {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    body.theme-dark #word-popup {
+        border-color: #5f6368;
+    }
+
+    @media (max-width: 400px) {
+        #word-popup {
+            min-width: 150px;
+            max-width: 210px;
+        }
+        #word-popup-hanzi {
+            font-size: 1.3rem;
+        }
+    }
+
+     
+    .upgrade-modal-box {
+        background: var(--box-bg);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
+        width: 480px;
+        max-width: 94vw;
+        position: relative;
+        color: var(--text-main);
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .upgrade-modal-header {
+        background: linear-gradient(135deg, var(--p), #6c3de8);
+        color: white;
+        padding: 22px 28px 16px;
+        text-align: center;
+    }
+
+    .upgrade-modal-header h2 {
+        margin: 0 0 4px;
+        font-size: 1.4rem;
+    }
+
+    .upgrade-modal-header p {
+        margin: 0;
+        font-size: 0.85rem;
+        opacity: 0.9;
+    }
+
+    .upgrade-modal-body {
+        padding: 22px 24px;
+        min-height: 480px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .upgrade-step {
+        flex: 1;
+        display: none;
+    }
+
+    .upgrade-step.active {
+        display: block;
+    }
+
+    .plan-option {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s;
+        background: var(--box-bg);
+    }
+
+    .plan-option:hover {
+        border-color: var(--p);
+        background: var(--btn-hover);
+    }
+
+    .plan-option.selected {
+        border-color: var(--p);
+        background: var(--btn-hover);
+        box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+    }
+
+    .plan-option .plan-name { font-weight: 700; font-size: 1rem; }
+    .plan-option .plan-old { font-size: 0.75rem; color: var(--text-muted); text-decoration: line-through; }
+    .plan-option .plan-price { font-size: 1.15rem; font-weight: 800; color: var(--p); }
+    .plan-option .plan-save { font-size: 0.7rem; color: var(--s); font-weight: 700; }
+
+    .plan-option.popular-plan { position: relative; }
+
+    .popular-badge {
+        position: absolute;
+        top: -10px;
+        left: 14px;
+        background: var(--p);
+        color: white;
+        font-size: 0.65rem;
+        padding: 2px 9px;
+        border-radius: 20px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .upgrade-gmail-input {
+        width: 100%;
+        padding: 12px 14px;
+        font-size: 1rem;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        box-sizing: border-box;
+        outline: none;
+        margin-bottom: 0;
+        text-align: left;
+    }
+
+    .upgrade-gmail-input:focus { border-color: var(--p); }
+
+    .upgrade-btn-primary {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, var(--p), #6c3de8);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 14px;
+        transition: 0.2s;
+        min-width: auto;
+        flex: none;
+    }
+
+    .upgrade-btn-primary:hover {
+        filter: brightness(1.1);
+        transform: translateY(-1px);
+    }
+
+    .upgrade-btn-secondary {
+        width: 100%;
+        padding: 10px;
+        background: transparent;
+        color: var(--text-muted);
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-top: 8px;
+        min-width: auto;
+        flex: none;
+    }
+
+    .upgrade-list p {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin: 5px 0 15px;
+    }
+
+    .ck-info-box {
+        background: linear-gradient(135deg, #f0f7ff, #e8f4fd);
+        border: 1.5px solid #b3d4f5;
+        border-radius: 14px;
+        padding: 18px 20px;
+        margin-bottom: 14px;
+        font-size: 0.9rem;
+        line-height: 1.7;
+    }
+
+    .ck-info-box .ck-amount { font-size: 1.5rem; font-weight: 900; color: var(--p); }
+
+    .ck-stk-btn {
+        background: var(--btn-hover);
+        color: var(--p);
+        font-size: 1rem;
+        padding: 3px 10px;
+        border-radius: 7px;
+        border: 1px dashed var(--p);
+        cursor: pointer;
+        font-weight: 700;
+        transition: 0.2s;
+        display: inline;
+    }
+
+    .ck-stk-btn:hover { background: var(--p); color: white; }
+
+    .zalo-qr-box { text-align: center; padding: 10px 0; }
+
+    .zalo-qr-box img {
+        width: 180px;
+        height: 180px;
+        border-radius: 14px;
+        border: 2px solid #e0e0e0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .zalo-qr-box p { font-size: 0.82rem; color: var(--text-muted); margin-top: 10px; }
+
+     
+    .word-block {
+        background: white;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 1.3rem;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.1s ease;
+        box-shadow: 0 2px 0 #ccc;
+        position: relative;
+        color: #333;
+    }
+
+    .word-block:active {
+        transform: translateY(2px);
+        box-shadow: none;
+    }
+
+    .word-block.in-pool:hover {
+        border-color: var(--p);
+        background: var(--btn-hover);
+    }
+
+    .word-block.in-target {
+        border-color: var(--p);
+        background: white;
+        box-shadow: 0 2px 0 var(--p);
+    }
+
+    .word-block.hidden-block {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+     
+    body.theme-dark .word-block {
+        background: #3c4043;
+        border-color: #5f6368;
+        color: #e8eaed;
+        box-shadow: 0 2px 0 #202124;
+    }
+
+    body.theme-dark .word-block.in-pool:hover {
+        background: #4a4d51;
+        border-color: var(--p);
+    }
+
+    body.theme-dark .word-block.in-target {
+        background: #202124;
+        border-color: var(--p);
+        color: #e8eaed;
+        box-shadow: 0 2px 0 var(--p);
+    }
+
+    @media (max-width: 520px) {
+        .upgrade-modal-box { width: 96vw; }
+        .upgrade-modal-header { padding: 18px 18px 12px; }
+        .upgrade-modal-body { padding: 16px; }
+    }
+<\/style>
+<\/head>
+
+<body>
+    
+<div id="word-popup">
+    <div id="word-popup-header">
+        <span id="word-popup-hanzi">字<\/span>
+        <button id="word-popup-speak" onclick="speakPopupWord()" title="Nghe phát âm">🔊<\/button>
+    <\/div>
+    <div id="word-popup-body">
+        <div id="word-popup-pinyin"><\/div>
+        <div id="word-popup-meaning"><\/div>
+        <div id="word-popup-loading">Đang tra cứu...<\/div>
+    <\/div>
+<\/div>
+
+
+<div id="toast-container"
+    style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
+<\/div>
+
+
+<div id="login-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="width: 300px;">
+        <button class="btn-close-modal" onclick="closeLoginModal()">×<\/button>
+        <h3 style="margin-top:0; color:var(--p);">Đăng Nhập<\/h3>
+        <p id="login-subtitle" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">Điền Email/SĐT để truy cập.
+        <\/p>
+
+        <div id="login-step-1">
+            <input type="text" id="login-email" placeholder="Nhập địa chỉ Email hoặc Số điện thoại"
+                style="padding: 12px; width: 100%; box-sizing: border-box; font-size: 1rem; margin-bottom: 10px;">
+            <div id="recaptcha-container" style="margin-bottom: 10px; display: flex; justify-content: center;"><\/div>
+            <button onclick="checkEmail()" id="btn-check-email" class="btn-main"
+                style="width: 100%; padding: 12px; font-size: 1rem;">Tiếp tục<\/button>
+        <\/div>
+
+        <div id="login-step-pass" class="hidden">
+            <div style="position: relative; margin-bottom: 10px;">
+                <input type="password" id="login-pass" placeholder="Nhập Mật khẩu"
+                    style="padding: 12px; font-size: 1rem; width: 100%; box-sizing: border-box; padding-right: 45px;">
+                <span tabindex="-1"
+                    onclick="var p=document.getElementById('login-pass'); if(p.type==='password'){p.type='text'; this.innerText='🙈';}else{p.type='password'; this.innerText='👁️';}"
+                    style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; cursor: pointer; filter: grayscale(1); display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; user-select: none;">👁️<\/span>
+            <\/div>
+            <button onclick="loginWithPass()" id="btn-verify-pass" class="btn-main"
+                style="width: 100%; padding: 12px; font-size: 1rem;">Đăng nhập<\/button>
+            <div style="text-align: center; margin-top: 15px;">
+                <button onclick="forgotPassword()"
+                    style="background: transparent; color: var(--text-muted); border: none; font-size: 0.8rem; text-decoration: underline; cursor: pointer; padding: 0;">Quên
+                    mật khẩu?<\/button>
+            <\/div>
+        <\/div>
+
+        <div id="login-step-otp" class="hidden">
+            <p id="login-step2-text"
+                style="font-size: 0.85rem; color: var(--s); font-weight: bold; margin-bottom: 15px; line-height: 1.4;">
+                Đã gửi mã! Vui lòng kiểm tra hộp thư.<\/p>
+            <input type="text" id="login-otp" placeholder="Mã 6 số" maxlength="6"
+                style="padding: 12px; font-size: 1.2rem; letter-spacing: 5px; text-align: center; margin-bottom: 10px; font-weight: bold; width: 100%; box-sizing: border-box;">
+
+            <div style="position: relative; margin-bottom: 15px;">
+                <input type="password" id="login-new-pass" placeholder="Tạo mật khẩu cho lần sau"
+                    style="padding: 12px; font-size: 1rem; width: 100%; box-sizing: border-box; padding-right: 45px;">
+                <span tabindex="-1"
+                    onclick="var np=document.getElementById('login-new-pass'); if(np.type==='password'){np.type='text'; this.innerText='🙈';}else{np.type='password'; this.innerText='👁️';}"
+                    style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; cursor: pointer; filter: grayscale(1); display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; user-select: none;">👁️<\/span>
+            <\/div>
+
+            <button onclick="verifyOTPAndSetup()" id="btn-verify-otp" class="btn-main"
+                style="width: 100%; padding: 12px; font-size: 1rem;">Xác nhận & Cập nhật<\/button>
+            <button onclick="resetLogin()"
+                style="background: transparent; color: var(--text-muted); border: none; font-size: 0.8rem; text-decoration: underline; cursor: pointer; padding: 0; display: block; margin: 15px auto 0;">Hủy
+                & Quay lại<\/button>
+        <\/div>
+    <\/div>
+<\/div>
+
+
+<div id="price-modal" class="modal-overlay hidden">
+    <div class="upgrade-modal-box">
+        <button class="btn-close-modal" onclick="closePriceModal()" style="color: rgba(255,255,255,0.85);">×<\/button>
+        <div class="upgrade-modal-header">
+            <h2>🚀 Nâng Cấp Tài Khoản PRO<\/h2>
+            <p>Mở khoá toàn bộ bài học · Học không giới hạn<\/p>
+        <\/div>
+        <div class="upgrade-modal-body">
+            <div class="upgrade-step active" id="upg-step-1">
+                <p style="font-weight: 700; margin: 0 0 12px; font-size: 0.95rem;">1️⃣ Chọn gói phù hợp với bạn:<\/p>
+
+                <div id="pricing-plans-container"
+                    style="max-height: 45vh; overflow-y: auto; padding-right: 5px; margin-bottom: 15px;">
+                    
+                <\/div>
+
+                <div style="margin-top: 5px;">
+                    <p style="font-weight: 700; margin: 0 0 8px; font-size: 0.95rem;">2️⃣ Gmail nhận nâng cấp:<\/p>
+                    <div id="upg-gmail-loggedin"
+                        style="display:none; background: var(--bg); border: 2px solid var(--s); border-radius: 10px; padding: 12px 14px; font-size: 1rem; font-weight: 700; color: var(--s);">
+                        ✅ <span id="upg-gmail-display"><\/span>
+                    <\/div>
+                    <input type="email" id="upg-gmail" class="upgrade-gmail-input" placeholder="example@gmail.com"
+                        style="display:block;">
+                <\/div>
+
+                <button class="upgrade-btn-primary" onclick="proceedToPayment()">Đăng Ký PRO →<\/button>
+                <div
+                    style="margin-top: 12px; font-size: 0.72rem; color: var(--text-muted); font-style: italic; text-align: center;">
+                    * Tài khoản được nâng cấp trong 10 phút – 1 ngày. Không hoàn tiền.
+                <\/div>
+            <\/div>
+
+            <div class="upgrade-step" id="upg-step-2">
+                <p style="font-weight: 700; margin: 0 0 12px; font-size: 0.95rem;">✅ Hướng dẫn chuyển khoản:<\/p>
+                <div class="ck-info-box">
+                    <div style="margin-bottom: 6px;">💰 Số tiền: <span class="ck-amount" id="ck-amount-display"><\/span>
+                    <\/div>
+                    <div style="margin-bottom: 6px;">👤 Chủ tài khoản: <strong>Phan Thi Ky Duyen<\/strong><\/div>
+                    <div style="margin-bottom: 6px;">🏦 Ngân hàng: <strong>Vietcombank<\/strong><\/div>
+                    <div style="margin-bottom: 6px;">📋 STK: <span class="ck-stk-btn"
+                            onclick="copySTKToClipboard('0041000198390')" title="Nhấn để copy">0041000198390<\/span>
+                        (nhấn để copy)<\/div>
+                    <div>📝 Nội dung: <strong id="ck-gmail-display" style="color: var(--p);"><\/strong><\/div>
+                <\/div>
+                <p style="font-weight: 700; margin: 0 0 10px; font-size: 0.92rem;">📲 Gửi bill xác nhận qua Zalo cho
+                    admin:<\/p>
+                <div class="zalo-qr-box">
+                    <img src="https://chart.googleapis.com/chart?chs=200x200&amp;cht=qr&amp;chl=https%3A%2F%2Fzalo.me%2F0764249074&amp;choe=UTF-8"
+                        alt="QR Zalo Admin"
+                        onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;data=https://zalo.me/0764249074'">
+                    <p>Quét mã QR bằng camera điện thoại<br>để mở Zalo và nhắn bill cho admin<\/p>
+                <\/div>
+                <button class="upgrade-btn-primary" onclick="closePriceModal()" style="background: var(--s);">✅ Đã
+                    chuyển khoản xong<\/button>
+                <button class="upgrade-btn-secondary" onclick="backToStep1()">← Quay lại chọn gói<\/button>
+            <\/div>
+        <\/div>
+    <\/div>
+<\/div>
+
+
+
+
+<div id="help-modal" class="modal-overlay hidden">
+    <div class="modal-content"
+        style="width: 500px; max-width: 90%; background: var(--box-bg); color: var(--text-main); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); text-align: left; padding: 30px;">
+        <button class="btn-close-modal" onclick="closeHelpModal()">×<\/button>
+        <h3 style="margin-top:0; color:var(--p); font-size: 1.3rem; display: flex; align-items: center; gap: 8px;">
+            📖 Hướng dẫn<\/h3>
+        <div style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main);">
+            <p style="margin-top:0">Chào mừng bạn! Dưới đây là các tính năng giúp bạn học hiệu quả nhất:<\/p>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div>🔍 <b>Tra từ thông minh:<\/b> Bấm vào bất kỳ chữ Hán nào trong câu hỏi hoặc đáp án để xem Pinyin,
+                    nghĩa Việt và nghe phát âm riêng từ đó.<\/div>
+                <div>⌨️ <b>Phím tắt nhanh:<\/b>
+                    <ul style="margin: 5px 0 0 20px; padding: 0;">
+                        <li>Nhấn <b>Ctrl<\/b> để nghe lại câu hỏi.<\/li>
+                        <li>Bấm <b>Enter 2 lần<\/b> (khi ô trống) để hiện gợi ý nhanh.<\/li>
+                    <\/ul>
+                <\/div>
+                <div>🔊 <b>Giọng đọc & Tốc độ:<\/b> Bạn có thể chọn giọng Nam/Nữ và chỉnh tốc độ đọc nhanh/chậm ở thanh
+                    điều khiển phía dưới thanh gõ chữ.<\/div>
+                <div>🎯 <b>Cách học:<\/b> Hãy cố gắng gõ đúng Tiếng Trung hoặc Pinyin. Nếu sai, câu đó sẽ lặp lại ngẫu
+                    nhiên để bạn ghi nhớ sâu hơn!<\/div>
+            <\/div>
+        <\/div>
+        <button onclick="closeHelpModal()" class="btn-main"
+            style="width: 100%; padding: 12px; font-size: 1rem; margin-top: 25px; border-radius: 12px;">Đã hiểu<\/button>
+    <\/div>
+<\/div>
+
+
+<div id="profile-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="width: 350px; background: var(--box-bg); color: var(--text-main); border-radius: 20px; text-align: center;">
+        <button class="btn-close-modal" onclick="closeUserProfileModal()">×<\/button>
+        <h3 style="margin-top:0; color:var(--p);">Hồ Sơ Của Bạn<\/h3>
+        
+        <div style="font-size: 3.5rem; margin: 15px 0;">
+            <span id="profile-modal-icon">🌱<\/span>
+        <\/div>
+        <h2 id="profile-modal-title" style="margin: 5px 0; color: #f39c12; font-size: 1.5rem;">Tân Binh<\/h2>
+        <p id="profile-modal-email" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px;"><\/p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center;">
+            <div style="background: rgba(0,0,0,0.03); padding: 15px; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05);">
+                <div style="font-size: 1.5rem; font-weight: bold; color: var(--s);" id="profile-modal-exp">0<\/div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Kinh Nghiệm<\/div>
+            <\/div>
+            <div style="background: rgba(0,0,0,0.03); padding: 15px; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05);">
+                <div style="font-size: 1.5rem; font-weight: bold; color: #e74c3c;" id="profile-modal-combo">0<\/div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Max Combo<\/div>
+            <\/div>
+            <div style="background: rgba(0,0,0,0.03); padding: 15px; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); grid-column: span 2;">
+                <div style="font-size: 1.5rem; font-weight: bold; color: #8e44ad;" id="profile-modal-streak">0<\/div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Chuỗi ngày luyện tập<\/div>
+            <\/div>
+        <\/div>
+        
+        <div style="margin-top: 20px; text-align: left;">
+            <p style="font-weight: bold; font-size: 0.95rem; margin-bottom: 10px; color: var(--p);">🏆 Bộ sưu tập thành tựu<\/p>
+            <div id="profile-modal-badges" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; min-height: 50px; align-items: center;">
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Đang tải...<\/span>
+            <\/div>
+        <\/div>
+    <\/div>
+<\/div>
+
+
+<div id="construction-modal" class="modal-overlay hidden">
+    <div class="modal-content" style="width: 350px; background: var(--box-bg); color: var(--text-main); border-radius: 20px; text-align: center; padding: 30px;">
+        <button class="btn-close-modal" onclick="closeConstructionModal()">×<\/button>
+        <div style="font-size: 3.5rem; margin-bottom: 15px;">🚧<\/div>
+        <h3 style="margin-top:0; color:var(--p); font-size: 1.4rem;">Đang Xây Dựng<\/h3>
+        <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 25px;">
+            Tính năng Word Bank hiện đang được xây dựng. Vui lòng quay lại sau!
+        <\/p>
+        <button onclick="closeConstructionModal()" class="btn-main" style="width: 100%; padding: 12px; font-size: 1rem; border-radius: 12px;">Đã hiểu<\/button>
+    <\/div>
+<\/div>
+    
+    <div id="toast-container"
+        style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
+    <\/div>
+
+    <div id="top-header" style="width: 100%; box-sizing: border-box; padding: 15px; display: flex; flex-direction: column; align-items: center; z-index: 100; gap: 10px; pointer-events: none;">
+        
+        <button id="btn-toggle-header" class="hidden" onclick="toggleHeader()" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; pointer-events: auto; padding: 5px;">
+            ▼ Mở Menu
+        <\/button>
+
+        <div id="top-header-content" style="width: 100%; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+            <div id="user-auth" style="pointer-events: auto;">
+                <button id="btn-login-show" onclick="showLoginModal()"
+                    style="padding: 8px 15px; border-radius: 8px; border: 1px solid #ccc; font-weight: bold; background: var(--box-bg); cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: var(--p);">🔒
+                    Đăng nhập<\/button>
+                <div id="user-profile" class="hidden" onclick="showUserProfileModal()"
+                    style="background: var(--box-bg); padding: 6px 12px; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: bold; font-size: 0.85rem; color: var(--text-main); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; cursor: pointer; border: 1px solid #e0e0e0; transition: 0.2s;">
+                    <span id="user-title-badge" title="Danh hiệu" style="font-size: 1.1rem; cursor: help;">🌱<\/span>
+                    <span id="user-email-display"
+                        style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><\/span>
+                    <span id="user-plan-badge"
+                        style="font-size: 0.7rem; font-weight: 800; padding: 2px 7px; border-radius: 10px; background: #e0e0e0; color: #555;">FREE<\/span>
+                    <span id="user-exp-date" style="font-size: 0.75rem; color: var(--p); display: none;"><\/span>
+                    <button onclick="event.stopPropagation(); logout()"
+                        style="background: #ff4757; color: white; border: none; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; cursor: pointer; min-width: auto; flex: none;">Đăng
+                        xuất<\/button>
+                <\/div>
+            <\/div>
+
+            <div id="theme-switcher" style="display: flex; gap: 10px; align-items: center; pointer-events: auto; flex-wrap: wrap;">
+                <button onclick="showPriceModal()"
+                    style="font-size: 0.95rem; font-family: inherit; height: 40px; box-sizing: border-box; padding: 0 15px; border-radius: 8px; border: 1px solid #ccc; font-weight: bold; background: var(--box-bg); cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); outline: none; color: var(--p); display: flex; align-items: center; justify-content: center;">🚀
+                    Nâng Cấp<\/button>
+                <select id="theme-select" onchange="changeTheme()"
+                    style="font-size: 0.95rem; font-family: inherit; height: 40px; box-sizing: border-box; padding: 0 10px 0 15px; border-radius: 8px; border: 1px solid #ccc; font-weight: bold; background: var(--box-bg); color: var(--text-main); cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); outline: none; display: flex; align-items: center; justify-content: center;">
+                    <option value="theme-standard">✨ Tiêu Chuẩn<\/option>
+                    <option value="theme-gamified">🎮 Sắc Màu<\/option>
+                    <option value="theme-academic">📚 Học Thuật<\/option>
+                    <option value="theme-dark">🌙 Bóng Đêm<\/option>
+                <\/select>
+            <\/div>
+        <\/div>
+    <\/div>
+
+    <div id="game-box">
+        <div id="start-screen">
+            <h1>PHẢN XẠ TIẾNG TRUNG<\/h1>
+
+            
+            <div id="home-mode-selection">
+                <p class="subtitle" style="margin-bottom: 20px;">Bạn muốn học theo phương pháp nào?<\/p>
+                <div style="display: flex; flex-direction: column; gap: 15px; max-width: 350px; margin: 0 auto;">
+                    <button class="btn-main" onclick="selectGlobalMode('typing')" style="padding: 15px; font-size: 1.1rem; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                        <span style="font-size: 1.4rem;">⌨️ Typing Mode<\/span>
+                        <span style="font-size: 0.85rem; font-weight: normal; opacity: 0.9;">Nhìn tiếng Việt, gõ chữ Hán/Pinyin<\/span>
+                    <\/button>
+                    <button class="btn-lvl" onclick="selectGlobalMode('construction')" style="padding: 15px; font-size: 1.1rem; display: flex; flex-direction: column; align-items: center; gap: 5px; border: 2px solid #f39c12; color: #d35400; background: #fdf2e9;">
+                        <span style="font-size: 1.4rem;">🧩 Word Bank<\/span>
+                        <span style="font-size: 0.85rem; font-weight: normal; opacity: 0.9;">Sắp xếp các mảnh ghép thành câu/từ<\/span>
+                    <\/button>
+                <\/div>
+            <\/div>
+
+            
+            <div id="course-section" class="hidden">
+                <button class="btn-back" onclick="backToModeSelection()" style="margin-bottom:20px; font-size:0.9rem">← Chọn lại chế độ học<\/button>
+                <div id="course-loader">
+                    <div class="spinner"><\/div>
+                    <p style="color: var(--text-muted);">Đang tải danh sách bài học...<\/p>
+                <\/div>
+                <div class="lvl-btns hidden" id="course-list">
+                    
+                <\/div>
+            <\/div>
+            
+            <div id="leaderboard-section" style="margin-top: 30px; border-top: 2px solid #f1f3f4; padding-top: 20px;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <button onclick="toggleLeaderboard(this)" style="border: none; background: transparent; font-size: 1.1rem; color: #f39c12; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;">🏆 Bảng Xếp Hạng<\/button>
+                    <button id="btn-refresh-leaderboard" onclick="refreshLeaderboard()" title="Tải lại dữ liệu mới nhất" style="border: none; background: transparent; font-size: 1rem; color: var(--text-muted); cursor: pointer; padding: 4px 6px; border-radius: 6px; transition: all 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.07)'" onmouseout="this.style.background='transparent'">🔄<\/button>
+                <\/div>
+                <div id="leaderboard-content" class="hidden" style="margin-top: 15px;">
+                    <div id="leaderboard-loader" style="font-size: 0.9rem; color: var(--text-muted);">Đang tải...<\/div>
+                    <div id="leaderboard-list" style="display: flex; flex-direction: column; gap: 8px; text-align: left; max-width: 350px; margin: 0 auto;">
+                        
+                    <\/div>
+                    <div id="leaderboard-updated" style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 10px;"><\/div>
+                <\/div>
+            <\/div>
+        <\/div>
+
+        <div id="unit-screen" class="hidden">
+            <h1 id="unit-hsk-label" style="color: var(--p); margin-bottom: 5px;">HSK 1<\/h1>
+            <p class="subtitle" style="margin-bottom: 20px;">Chọn mục để học<\/p>
+            <div class="lvl-btns" id="unit-list"><\/div>
+            <button class="btn-home" style="margin-top: 20px;" onclick="goHome()">🏠 Trang Chủ<\/button>
+        <\/div>
+
+        <div id="loading-screen" class="hidden">
+            <div class="spinner"><\/div>
+            <p style="color: var(--text-muted); font-weight:500; font-size: 1.1rem;">Loading...<\/p>
+        <\/div>
+
+        <div id="play-screen" class="hidden">
+            <div class="header-info">
+                <div id="hsk-label" style="background:var(--p); color:white; padding:4px 12px; border-radius:6px">HSK 3
+                <\/div>
+                <div class="stats-bar">
+                    <span style="margin-right:15px">Còn lại: <strong id="rem-count"
+                            style="color:var(--p)">0<\/strong><\/span>
+                    <span>EXP: <strong id="exp-val" style="color:var(--s)">0<\/strong><span class="combo-badge"
+                            id="combo-badge">Combo 🔥<\/span><\/span>
+                <\/div>
+            <\/div>
+            <div id="progress-container">
+                <div id="progress-fill"><\/div>
+            <\/div>
+            
+            
+            <div id="timer-container" class="hidden" style="width: 100%; height: 6px; background: #eee; border-radius: 3px; margin-bottom: 20px; overflow: hidden;">
+                <div id="timer-fill" style="width: 100%; height: 100%; background: #f39c12; transition: width 0.1s linear, background 0.3s ease;"><\/div>
+            <\/div>
+
+            <div id="vi-text">Đang chuẩn bị câu hỏi...<\/div>
+            <div id="result-box"><\/div>
+
+            
+            <div class="input-group" id="typing-area">
+                <input type="text" id="inp" placeholder="Dịch sang tiếng Trung / Pinyin..." autocomplete="off">
+            <\/div>
+
+            
+            <div id="construction-area" class="hidden" style="margin-bottom: 20px;">
+                <div id="construction-target" style="min-height: 55px; background: #f8f9fa; border: 2px dashed #dadce0; border-radius: 12px; margin-bottom: 15px; padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; align-content: flex-start;">
+                    
+                <\/div>
+                <div id="construction-pool" style="min-height: 80px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center;">
+                    
+                <\/div>
+            <\/div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; width: 100%;">
+                <button id="btn-main" class="btn-main" onclick="handleLogic()" style="flex: 1; height: 55px; border-radius: 12px; font-weight: 600; font-size: 1rem; color: white; border: none; cursor: pointer; transition: all 0.2s;">Kiểm tra (Enter)<\/button>
+                <button class="btn-audio" onclick="playCurrentAudio()" title="Nghe tiếng Trung (Ctrl)" style="width: 55px; height: 55px; border-radius: 12px; font-size: 1.5rem; background: var(--btn-hover); color: var(--p); border: 2px solid var(--p); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex: none;">🔊<\/button>
+            <\/div>
+
+            <button id="btn-toggle-tools" class="hidden" onclick="toggleTools()" style="width: 100%; padding: 10px; background: transparent; border: 1px dashed #ccc; border-radius: 12px; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; margin-bottom: 20px;">
+                ⚙️ Mở rộng Công cụ & Điều hướng
+            <\/button>
+
+            <div id="bottom-tools-content">
+                <div class="audio-controls">
+                    <select id="voice-select" title="Chọn giọng đọc"><\/select>
+                    <span>Tốc độ:<\/span>
+                    <input type="range" id="audio-speed" min="0.5" max="1.5" step="0.1" value="1.0">
+                    <span id="speed-val" style="min-width: 30px; display:inline-block;">1.0<\/span>
+                <\/div>
+
+                <div class="btns">
+                    <button class="btn-back" onclick="goBack()">← Lùi lại<\/button>
+                    <button class="btn-hint" onclick="showHelpModal()">📖 Hướng dẫn<\/button>
+                <\/div>
+                <button class="btn-home" onclick="backToUnitList()">🏠 Quay lại danh sách bài học<\/button>
+            <\/div>
+        <\/div>
+
+        <div id="victory-screen" class="hidden">
+            <h2 style="color:var(--p); margin-top:0;">PHẢN XẠ TIẾNG TRUNG<\/h2>
+            <h2 style="color:var(--s)">🎉 Chúc mừng!<\/h2>
+            <p>Bạn đã hoàn thành xuất sắc bài học!<\/p>
+            <div
+                style="font-size: 1.2rem; margin: 20px auto; background: var(--bg); padding: 15px; border-radius: 16px; border: 2px solid #e1e1e1; display: inline-block; text-align: left;">
+                <div style="margin-bottom:8px">⭐ Tổng điểm: <strong id="final-exp" style="color:var(--s)">0<\/strong>
+                    EXP
+                <\/div>
+                <div>🔥 Chuỗi đúng: <strong id="final-combo" style="color:#ffa502">0<\/strong> câu<\/div>
+            <\/div>
+            <p id="quote-text"
+                style="font-style: italic; color: var(--text-muted); margin-bottom: 25px; padding: 0 10px;"><\/p>
+            <button class="btn-home" onclick="backToUnitList()">🏠 Quay lại danh sách bài học<\/button>
+        <\/div>
+    <\/div>
+
+    <script>
+    
+
+    function toggleLeaderboard(btn) {
+        const content = document.getElementById('leaderboard-content');
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+        } else {
+            content.classList.add('hidden');
+        }
+    }
+
+    function toggleHeader() {
+        const content = document.getElementById('top-header-content');
+        const btn = document.getElementById('btn-toggle-header');
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            btn.innerText = "▲ Ẩn Menu";
+        } else {
+            content.classList.add('hidden');
+            btn.innerText = "▼ Mở Menu";
+        }
+    }
+
+    function toggleTools() {
+        const content = document.getElementById('bottom-tools-content');
+        const btn = document.getElementById('btn-toggle-tools');
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            btn.innerText = "▲ Thu gọn Công cụ & Điều hướng";
+        } else {
+            content.classList.add('hidden');
+            btn.innerText = "⚙️ Mở rộng Công cụ & Điều hướng";
+        }
+    }
+
+    function showToast(message, isError = true) {
+        const container = document.getElementById('toast-container');
+        container.innerHTML = "";
+        const toast = document.createElement('div');
+        toast.style.background = isError ? '#ff4757' : '#2ecc71';
+        toast.style.color = '#fff';
+        toast.style.padding = '12px 24px';
+        toast.style.borderRadius = '8px';
+        toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+        toast.style.fontWeight = 'bold';
+        toast.style.fontSize = '0.95rem';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-20px)';
+        toast.style.transition = 'all 0.3s ease';
+        toast.style.textAlign = 'center';
+        toast.style.lineHeight = '1.5';
+        toast.innerHTML = message;
+        container.appendChild(toast);
+        setTimeout(() => { toast.style.opacity = '1'; toast.style.transform = 'translateY(0)'; }, 10);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-20px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 7000);
+    }
+
+    function showHelpModal() { document.getElementById('help-modal').classList.remove('hidden'); }
+    function closeHelpModal() { document.getElementById('help-modal').classList.add('hidden'); }
+
+    function showLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); resetLogin(); }
+    function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
+
+    function closeConstructionModal() { document.getElementById('construction-modal').classList.add('hidden'); }
+
+    let activeMode = 'typing';
+
+    function selectGlobalMode(mode) {
+        activeMode = mode;
+        document.getElementById('home-mode-selection').classList.add('hidden');
+        document.getElementById('course-section').classList.remove('hidden');
+    }
+
+    function backToModeSelection() {
+        document.getElementById('course-section').classList.add('hidden');
+        document.getElementById('home-mode-selection').classList.remove('hidden');
+    }
+
+    function showPriceModal() {
+        document.getElementById('price-modal').classList.remove('hidden');
+        document.getElementById('upg-step-1').classList.add('active');
+        document.getElementById('upg-step-2').classList.remove('active');
+        if (currentEmail) {
+            document.getElementById('upg-gmail-loggedin').style.display = 'block';
+            document.getElementById('upg-gmail-display').textContent = currentEmail;
+            document.getElementById('upg-gmail').style.display = 'none';
+        } else {
+            document.getElementById('upg-gmail-loggedin').style.display = 'none';
+            document.getElementById('upg-gmail').style.display = 'block';
+            document.getElementById('upg-gmail').value = '';
+        }
+        
+        
+        renderPricingPlans();
+    }
+    function closePriceModal() { document.getElementById('price-modal').classList.add('hidden'); }
+    function closeAndOpenLogin() { closePriceModal(); showLoginModal(); }
+
+    function changeTheme() {
+        const theme = document.getElementById('theme-select').value;
+        document.body.className = theme;
+        localStorage.setItem('hsk-theme', theme);
+    }
+
+    function copySTKToClipboard(text) {
+        const input = document.createElement("input");
+        input.value = text;
+        input.style.position = "absolute";
+        input.style.opacity = "0";
+        document.body.appendChild(input);
+        input.select();
+        input.setSelectionRange(0, 99999);
+        try {
+            document.execCommand('copy');
+            showToast('Đã copy số tài khoản!', false);
+        } catch (err) {
+            showToast('Thiết bị không hỗ trợ tính năng copy!', true);
+        }
+        document.body.removeChild(input);
+    }
+
+    
+    let selectedPlanId = null;
+    let selectedPlanLabel = '';
+    let selectedPlanAmount = 0;
+    
+    function formatVND(n) {
+        return n.toLocaleString('vi-VN') + 'đ';
+    }
+
+    function renderPricingPlans() {
+        const container = document.getElementById('pricing-plans-container');
+        if (!container || container.innerHTML.trim() !== '') return; 
+        
+        let html = '';
+        if (typeof GLOBAL_PRICING !== 'undefined' && Array.isArray(GLOBAL_PRICING)) {
+            GLOBAL_PRICING.forEach(plan => {
+                const savePercent = plan.oldPrice > 0 ? Math.round((1 - plan.price / plan.oldPrice) * 100) : 0;
+                const saveText = savePercent > 0 ? `Tiết kiệm ~${savePercent}%` : '';
+                const popularBadge = plan.isPopular ? `<span class="popular-badge">Phổ biến nhất<\/span>` : '';
+                const classNames = plan.isPopular ? "plan-option popular-plan" : "plan-option";
+                const fmtPrice = formatVND(plan.price);
+                const fmtOld = plan.oldPrice > 0 ? formatVND(plan.oldPrice) : '';
+                
+                html += `
+                <div class="${classNames}" id="plan-${plan.id}" onclick="selectPlan('${plan.id}', '${fmtPrice}', ${plan.price})">
+                    ${popularBadge}
+                    <div>
+                        <div class="plan-name">${plan.name}<\/div>
+                        <div class="plan-old">${fmtOld}<\/div>
+                    <\/div>
+                    <div style="text-align:right">
+                        <div class="plan-price">${fmtPrice}<\/div>
+                        <div class="plan-save">${saveText}<\/div>
+                    <\/div>
+                <\/div>`;
+            });
+        }
+        
+        container.innerHTML = html;
+        
+        
+        if (typeof GLOBAL_PRICING !== 'undefined' && GLOBAL_PRICING.length > 0) {
+            const defaultPlan = GLOBAL_PRICING.find(p => p.isPopular) || GLOBAL_PRICING[0];
+            selectPlan(defaultPlan.id, formatVND(defaultPlan.price), defaultPlan.price);
+        }
+    }
+
+    function selectPlan(planId, label, amount) {
+        selectedPlanId = planId;
+        selectedPlanLabel = label;
+        selectedPlanAmount = amount;
+        document.querySelectorAll('.plan-option').forEach(el => el.classList.remove('selected'));
+        const el = document.getElementById('plan-' + planId);
+        if(el) el.classList.add('selected');
+    }
+
+    function proceedToPayment() {
+        if (!selectedPlanId) { showToast('Vui lòng chọn gói trước!', true); return; }
+        const gmail = currentEmail || document.getElementById('upg-gmail').value.trim();
+        
+        let displayContent = gmail;
+        if (!displayContent) {
+            displayContent = "SĐT hoặc Gmail của bạn";
+        } else if (displayContent.includes('@')) {
+            displayContent = displayContent.split('@')[0];
+        }
+
+        document.getElementById('ck-amount-display').textContent = selectedPlanLabel;
+        document.getElementById('ck-gmail-display').textContent = displayContent;
+        document.getElementById('upg-step-1').classList.remove('active');
+        document.getElementById('upg-step-2').classList.add('active');
+    }
+
+    function backToStep1() {
+        document.getElementById('upg-step-2').classList.remove('active');
+        document.getElementById('upg-step-1').classList.add('active');
+    }
+
+    
+    window.addEventListener('hashchange', function () {
+        const hash = window.location.hash.replace('#', '');
+        if (!hash || hash === 'home') {
+            goHome(true);
+        } else if (hash === 'units') {
+            if (currentSheetName) backToUnitList(true);
+            else goHome(true);
+        } else if (hash === 'quiz') {
+            if (!currentSheetName) goHome(true);
+        }
+    });
+
+    
+    const savedTheme = localStorage.getItem('hsk-theme') || 'theme-standard';
+    document.body.className = savedTheme;
+    document.getElementById('theme-select').value = savedTheme;
+
+        
+        const BADGE_INFO = {
+            "fire7": { icon: "🔥", name: "Lửa bền bỉ (Chuỗi 7 ngày)" },
+            "fire30": { icon: "🛡️", name: "Hộ vệ (Chuỗi 30 ngày)" },
+            "fire100": { icon: "🧘", name: "Bậc thầy (Chuỗi 100 ngày)" },
+            "acc_1": { icon: "🎯", name: "Xạ thủ (100% Chính xác 1 bài)" },
+            "acc_3": { icon: "💎", name: "Triple Ace (100% Chính xác 3 bài)" },
+            "vol100": { icon: "🍎", name: "Người mới (100 câu)" },
+            "vol1000": { icon: "📚", name: "Mọt sách (1000 câu)" },
+            "vol5000": { icon: "🏛️", name: "Từ điển sống (5000 câu)" },
+            "speedster": { icon: "⚡", name: "Chớp nhoáng (Bài < 2p)" }
+        };
+
+    
+    function showUserProfileModal() {
+        if (!currentEmail || !currentToken) return;
+        document.getElementById('profile-modal').classList.remove('hidden');
+        document.getElementById('profile-modal-email').innerText = currentEmail;
+        
+        
+        document.getElementById('profile-modal-exp').innerText = "...";
+        document.getElementById('profile-modal-combo').innerText = "...";
+        document.getElementById('profile-modal-streak').innerText = "...";
+        document.getElementById('profile-modal-title').innerText = "Đang tải...";
+        document.getElementById('profile-modal-icon').innerText = "⏳";
+        document.getElementById('profile-modal-badges').innerHTML = '<span style="font-size: 0.85rem; color: var(--text-muted);">Đang tải...<\/span>';
+        
+        google.script.run.withSuccessHandler(function(res) {
+            if (res && res.success) {
+                document.getElementById('profile-modal-exp').innerText = res.exp || 0;
+                document.getElementById('profile-modal-combo').innerText = res.maxCombo || 0;
+                document.getElementById('profile-modal-streak').innerText = res.streak || 0;
+                if (res.title) {
+                    const parts = res.title.split(' ');
+                    document.getElementById('profile-modal-icon').innerText = parts[0] || "🌱";
+                    document.getElementById('profile-modal-title').innerText = parts.slice(1).join(' ') || "Tân binh";
+                }
+                
+                
+                const badgeContainer = document.getElementById('profile-modal-badges');
+                if (res.badges && res.badges.length > 0) {
+                    let badgeHTML = '';
+                    res.badges.forEach(bId => {
+                        if(BADGE_INFO[bId]) {
+                            badgeHTML += `<div style="background: rgba(255,165,0,0.15); border: 1px solid rgba(255,165,0,0.3); border-radius: 8px; padding: 5px 8px; display: inline-flex; align-items: center; gap: 5px;" title="${BADGE_INFO[bId].name}">
+                                <span style="font-size: 1.2rem;">${BADGE_INFO[bId].icon}<\/span>
+                            <\/div>`;
+                        }
+                    });
+                    badgeContainer.innerHTML = badgeHTML;
+                } else {
+                    badgeContainer.innerHTML = '<span style="font-size: 0.85rem; color: var(--text-muted);">Hãy hoàn thành bài học để thu thập huy hiệu nhé!<\/span>';
+                }
+
+            } else {
+                showToast("Không thể tải thông tin hồ sơ", true);
+            }
+        }).getUserStats(currentEmail, currentToken);
+    }
+
+    function closeUserProfileModal() {
+        document.getElementById('profile-modal').classList.add('hidden');
+    }
+
+    
+    function _renderLeaderboardData(data) {
+        const container = document.getElementById('leaderboard-list');
+        const loader = document.getElementById('leaderboard-loader');
+        const updatedEl = document.getElementById('leaderboard-updated');
+        loader.style.display = 'none';
+        
+        if (!data || data.length === 0) {
+            container.innerHTML = '<div style="color:var(--text-muted); font-size:0.9rem;">Chưa có dữ liệu bảng xếp hạng ngày hôm nay.<\/div>';
+            return;
+        }
+        let html = '';
+        data.forEach((user, index) => {
+            let badge = '';
+            if(index === 0) badge = '👑';
+            else if(index === 1) badge = '🥈';
+            else if(index === 2) badge = '🥉';
+            else badge = `<span style="display:inline-block; width:20px; text-align:center; font-weight:bold; color:#777">${index + 1}<\/span>`;
+
+            html += `
+            <div class="leaderboard-item" style="margin-bottom: 8px;">
+                <div>${badge} <span style="font-weight:600; color:var(--text-main); margin-left:8px;">${user.user}<\/span><\/div>
+                <div class="leaderboard-exp">🔥 ${user.exp.toLocaleString('vi-VN')}<\/div>
+            <\/div>`;
+        });
+        container.innerHTML = html;
+        if (updatedEl) {
+            const now = new Date();
+            updatedEl.innerText = `Cập nhật lúc ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+        }
+    }
+
+    // Load Leaderboard (dùng cache – nhanh)
+    function loadLeaderboard() {
+        google.script.run
+            .withSuccessHandler(_renderLeaderboardData)
+            .withFailureHandler(() => {
+                document.getElementById('leaderboard-loader').innerText = 'Không thể tải Bảng xếp hạng lúc này.';
+            }).getLeaderboard();
+    }
+
+    
+    function refreshLeaderboard() {
+        const btn = document.getElementById('btn-refresh-leaderboard');
+        const loader = document.getElementById('leaderboard-loader');
+        if (btn) { btn.innerText = '⏳'; btn.disabled = true; }
+        if (loader) { loader.style.display = 'block'; loader.innerText = 'Đang làm mới...'; }
+        document.getElementById('leaderboard-list').innerHTML = '';
+
+        google.script.run
+            .withSuccessHandler(data => {
+                if (btn) { btn.innerText = '🔄'; btn.disabled = false; }
+                _renderLeaderboardData(data);
+            })
+            .withFailureHandler(() => {
+                if (btn) { btn.innerText = '🔄'; btn.disabled = false; }
+                if (loader) loader.innerText = 'Không thể tải Bảng xếp hạng lúc này.';
+            }).getLeaderboardForceRefresh();
+    }
+    
+    
+    window.addEventListener('load', loadLeaderboard);
+<\/script>
+    <script>
+    
+
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyCf17AL9lVpC6X3bmcx0Fi1sGLPk7OwMVQ",
+      authDomain: "hsk-phan-xa.firebaseapp.com",
+      projectId: "hsk-phan-xa",
+      storageBucket: "hsk-phan-xa.firebasestorage.app",
+      messagingSenderId: "712420769833",
+      appId: "1:712420769833:web:c033fcbe7d675b7892dc38"
+    };
+
+    if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+
+    let currentEmail = localStorage.getItem('hsk_email') || "";
+    let currentToken = localStorage.getItem('hsk_token') || "";
+    let globalProgress = {};
+    let globalIsPremium = false;
+    let globalExpDate = "";
+    
+    let isProgressLoaded = false;
+
+
+    
+    
+    function mergeLocalProgress(serverData) {
+        let localBackup = {};
+        try {
+            const raw = localStorage.getItem('hsk_progress_temp');
+            if (raw) localBackup = JSON.parse(raw);
+        } catch(e) { localBackup = {}; }
+        const merged = Object.assign({}, serverData);
+        for (let key in localBackup) {
+            if (localBackup[key]) merged[key] = true;
+        }
+        return merged;
+    }
+
+    function checkAuthStatus() {
+        if (currentEmail && currentToken) {
+            document.getElementById('btn-login-show').classList.add('hidden');
+            document.getElementById('user-profile').classList.remove('hidden');
+            document.getElementById('user-email-display').innerText = currentEmail;
+            updatePlanBadge();
+
+            isProgressLoaded = false; 
+            google.script.run.withSuccessHandler(function (res) {
+                if (res.error === "UNAUTHORIZED") {
+                    handleUnauthorized();
+                } else if (res.success) {
+                    
+                    globalProgress = mergeLocalProgress(res.data || {});
+                    globalIsPremium = res.isPremium;
+                    globalExpDate = res.expDate || "";
+                    isProgressLoaded = true; 
+                    
+                    try { localStorage.setItem('hsk_progress_temp', JSON.stringify(globalProgress)); } catch(e) {}
+                    updatePlanBadge();
+                    renderUnitListIfActive();
+                }
+            }).withFailureHandler(function() {
+                
+                try {
+                    const raw = localStorage.getItem('hsk_progress_temp');
+                    if (raw) globalProgress = JSON.parse(raw);
+                } catch(e) {}
+                isProgressLoaded = true; 
+                renderUnitListIfActive();
+            }).getUserProgress(currentEmail, currentToken);
+
+            startSessionHeartbeat();
+        } else {
+            document.getElementById('btn-login-show').classList.remove('hidden');
+            document.getElementById('user-profile').classList.add('hidden');
+            globalIsPremium = false;
+            globalExpDate = "";
+            stopSessionHeartbeat();
+        }
+    }
+
+    function updatePlanBadge() {
+        const badge = document.getElementById('user-plan-badge');
+        const expDisplay = document.getElementById('user-exp-date');
+        if (!badge) return;
+        if (globalIsPremium) {
+            badge.textContent = 'PRO ⚡';
+            badge.style.background = 'linear-gradient(135deg, #1a73e8, #6c3de8)';
+            badge.style.color = 'white';
+            if (expDisplay && globalExpDate) {
+                expDisplay.textContent = '(EXP: ' + globalExpDate + ')';
+                expDisplay.style.display = 'inline';
+            }
+        } else {
+            badge.textContent = 'FREE';
+            badge.style.background = '#e0e0e0';
+            badge.style.color = '#555';
+            if (expDisplay) expDisplay.style.display = 'none';
+        }
+    }
+
+    let heartbeatTimer = null;
+    function startSessionHeartbeat() {
+        if (heartbeatTimer) clearInterval(heartbeatTimer);
+        heartbeatTimer = setInterval(() => {
+            if (currentEmail && currentToken) {
+                google.script.run.withSuccessHandler(isValid => {
+                    if (!isValid) handleUnauthorized();
+                }).checkSession(currentEmail, currentToken);
+            }
+        }, 30000);
+    }
+
+    function stopSessionHeartbeat() {
+        if (heartbeatTimer) clearInterval(heartbeatTimer);
+    }
+
+    function handleUnauthorized() {
+        stopSessionHeartbeat();
+        showToast("Tài khoản của bạn đang được đăng nhập ở một thiết bị khác. Bạn đã bị đăng xuất khỏi phiên này.", true);
+        logout();
+    }
+
+    function logout() {
+        localStorage.removeItem('hsk_email');
+        localStorage.removeItem('hsk_token');
+        localStorage.removeItem('hsk_progress_temp'); 
+        currentEmail = "";
+        currentToken = "";
+        globalProgress = {};
+        globalIsPremium = false;
+        globalExpDate = "";
+        isProgressLoaded = false;
+        checkAuthStatus();
+        renderUnitListIfActive();
+    }
+
+    function resetLogin() {
+        document.getElementById('login-step-1').classList.remove('hidden');
+        document.getElementById('login-step-pass').classList.add('hidden');
+        document.getElementById('login-step-otp').classList.add('hidden');
+        document.getElementById('login-pass').value = "";
+        document.getElementById('login-otp').value = "";
+        document.getElementById('login-new-pass').value = "";
+        document.getElementById('btn-check-email').innerText = "Tiếp tục";
+        document.getElementById('btn-check-email').disabled = false;
+    }
+
+    function checkEmail() {
+        const accStr = document.getElementById('login-email').value.trim();
+        if (!accStr) { showToast("Vui lòng nhập Email hoặc SĐT hợp lệ!", true); return; }
+
+        let normalizedAcc = accStr;
+        if (!normalizedAcc.includes('@')) {
+            normalizedAcc = normalizedAcc.replace(/[^\d+]/g, '');
+            if (normalizedAcc.startsWith('0') && normalizedAcc.length >= 10) {
+                normalizedAcc = '+84' + normalizedAcc.substring(1);
+            }
+        }
+        
+        
+        const email = normalizedAcc;
+
+        const btn = document.getElementById('btn-check-email');
+        btn.innerText = "Đang kiểm tra...";
+        btn.disabled = true;
+
+        google.script.run.withSuccessHandler(function (res) {
+            btn.innerText = "Tiếp tục";
+            btn.disabled = false;
+            if (res.error) {
+                showToast(res.error, true);
+            } else if (res.hasPassword) {
+                document.getElementById('login-step-1').classList.add('hidden');
+                document.getElementById('login-step-pass').classList.remove('hidden');
+                document.getElementById('login-subtitle').innerText = email;
+                document.getElementById('login-pass').focus();
+            } else {
+                triggerSendOTP(email, "Đang gửi mã đăng ký...");
+            }
+        }).getPasswordStatus(email);
+    }
+
+    function forgotPassword() {
+        const email = document.getElementById('login-email').value.trim();
+        triggerSendOTP(email, "Đang gửi yêu cầu...");
+    }
+
+    function triggerSendOTP(email, loadingText) {
+        document.getElementById('login-step-pass').classList.add('hidden');
+        document.getElementById('login-step-1').classList.add('hidden');
+        const btnOtp = document.getElementById('btn-verify-otp');
+        document.getElementById('login-subtitle').innerText = "Vui lòng chờ...";
+        btnOtp.disabled = true;
+
+        if (!email.includes('@')) {
+            
+            document.getElementById('login-step-otp').classList.remove('hidden');
+            document.getElementById('login-step2-text').innerText = "Đang xác thực bảo mật...";
+            document.getElementById('login-subtitle').innerText = email;
+
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                    'size': 'invisible',
+                    'callback': (response) => {
+                        
+                    }
+                });
+            }
+
+            firebase.auth().signInWithPhoneNumber(email, window.recaptchaVerifier)
+                .then((confirmationResult) => {
+                    window.confirmationResult = confirmationResult;
+                    document.getElementById('login-step2-text').innerText = "Mã SMS đã gửi đến SĐT của bạn.";
+                    btnOtp.disabled = false;
+                }).catch((error) => {
+                    console.error(error);
+                    let errorMsg = error.message || "";
+                    let displayMsg = "Lỗi gửi SMS: " + errorMsg;
+                    if (errorMsg.includes("BILLING_NOT_ENABLED")) {
+                        displayMsg = "Tính năng đăng nhập bằng SĐT chưa sẵn sàng, vui lòng thử lại sau";
+                    }
+                    showToast(displayMsg, true);
+                    resetLogin();
+                    if(window.recaptchaVerifier) {
+                        window.recaptchaVerifier.render().then(function(widgetId) {
+                            grecaptcha.reset(widgetId);
+                        });
+                    }
+                });
+        } else {
+            google.script.run.withSuccessHandler(function (res) {
+                if (res.error) {
+                    showToast(res.error, true);
+                    resetLogin();
+                } else {
+                    document.getElementById('login-step-otp').classList.remove('hidden');
+                    document.getElementById('login-step2-text').innerText = "Mã đã gửi đến email của bạn.";
+                    document.getElementById('login-subtitle').innerText = email;
+                    btnOtp.disabled = false;
+                }
+            }).requestLoginOTP(email);
+        }
+    }
+
+    function loginWithPass() {
+        const email = document.getElementById('login-email').value.trim();
+        const pass = document.getElementById('login-pass').value;
+        if (!pass) { showToast("Vui lòng nhập mật khẩu!", true); return; }
+
+        const btn = document.getElementById('btn-verify-pass');
+        btn.innerText = "Đang kiểm tra...";
+        btn.disabled = true;
+
+        google.script.run.withSuccessHandler(function (res) {
+            btn.innerText = "Đăng nhập";
+            btn.disabled = false;
+            if (res.error) { showToast(res.error, true); }
+            else { handleLoginSuccess(res.email, res.token); }
+        }).loginWithPassword(email, pass);
+    }
+
+    function verifyOTPAndSetup() {
+        const rawAcc = document.getElementById('login-email').value.trim();
+        let email = rawAcc;
+        if (!email.includes('@')) {
+            email = email.replace(/[^\d+]/g, '');
+            if (email.startsWith('0') && email.length >= 10) {
+                email = '+84' + email.substring(1);
+            }
+        }
+        
+        const otp = document.getElementById('login-otp').value.trim();
+        const newPass = document.getElementById('login-new-pass').value;
+
+        if (!otp) { showToast("Vui lòng nhập mã OTP!", true); return; }
+        if (!newPass) { showToast("Vui lòng tạo một mật khẩu!", true); return; }
+
+        const btn = document.getElementById('btn-verify-otp');
+        btn.innerText = "Đang xử lý...";
+        btn.disabled = true;
+
+        if (!email.includes('@')) {
+            if (window.confirmationResult) {
+                window.confirmationResult.confirm(otp).then((result) => {
+                    const verifiedPhone = result.user.phoneNumber;
+                    
+                    google.script.run.withSuccessHandler(function (res) {
+                        btn.innerText = "Xác nhận & Cập nhật";
+                        btn.disabled = false;
+                        if (res.error) { showToast(res.error, true); }
+                        else { handleLoginSuccess(res.email, res.token); }
+                    }).setPassword(verifiedPhone, newPass, "firebase_verified");
+                }).catch((error) => {
+                    btn.innerText = "Xác nhận & Cập nhật";
+                    btn.disabled = false;
+                    showToast("Mã xác nhận không đúng hoặc đã hết hạn", true);
+                });
+            } else {
+                btn.innerText = "Xác nhận & Cập nhật";
+                btn.disabled = false;
+                showToast("Vui lòng yêu cầu lại mã OTP", true);
+            }
+        } else {
+            google.script.run.withSuccessHandler(function (res) {
+                btn.innerText = "Xác nhận & Cập nhật";
+                btn.disabled = false;
+                if (res.error) { showToast(res.error, true); }
+                else { handleLoginSuccess(res.email, res.token); }
+            }).setPassword(email, newPass, otp);
+        }
+    }
+
+    function handleLoginSuccess(email, token) {
+        currentEmail = email;
+        currentToken = token;
+        localStorage.setItem('hsk_email', currentEmail);
+        localStorage.setItem('hsk_token', currentToken);
+        closeLoginModal();
+        checkAuthStatus();
+        showToast("Đăng nhập thành công!", false);
+    }
+
+    
+    checkAuthStatus();
+<\/script>
+    <script>
+    
+
+    let currentPopupWord = '';
+    let activeWordSpan = null;
+
+    
+
+    function segmentChineseText(text, viPlus) {
+        if (!text) return '';
+        let html = '';
+
+        
+        
+        let meaningMap = {}; 
+        if (viPlus && text.includes('|') && viPlus.includes('|')) {
+            const vpSegments = viPlus.split('|');
+            const zhSegments = text.split('|');
+            
+            if (vpSegments.length === zhSegments.length) {
+                zhSegments.forEach((seg, i) => {
+                    if (vpSegments[i] !== undefined) {
+                        meaningMap[i] = vpSegments[i].trim();
+                    }
+                });
+            }
+        }
+
+        if (text.includes('|')) {
+            const segments = text.split('|');
+            let zhWordIdx = 0; 
+            for (let i = 0; i < segments.length; i++) {
+                const s = segments[i];
+                if (!s) { zhWordIdx++; continue; }
+                if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(s)) {
+                    const meaning = meaningMap[i] || '';
+                    const dataMeaning = meaning ? ` data-meaning="${meaning.replace(/"/g, '&quot;')}"` : '';
+                    html += `<span class="zh-word" data-word="${s.replace(/"/g, '&quot;')}"${dataMeaning}>${s}<\/span>`;
+                } else {
+                    html += s;
+                }
+                zhWordIdx++;
+            }
+        } else {
+            // Không có dấu | → không thể map viPlus, fallback về segmentation tự động
+            if (!('Segmenter' in Intl)) {
+                return text.split('').map(ch => {
+                    if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(ch)) {
+                        return `<span class="zh-word" data-word="${ch}">${ch}<\/span>`;
+                    }
+                    return ch;
+                }).join('');
+            }
+            const segmenter = new Intl.Segmenter('zh', { granularity: 'word' });
+            const segments = [...segmenter.segment(text)];
+            for (const seg of segments) {
+                const s = seg.segment;
+                if (seg.isWordLike && /[\u4e00-\u9fff\u3400-\u4dbf]/.test(s)) {
+                    html += `<span class="zh-word" data-word="${s.replace(/"/g, '&quot;')}">${s}<\/span>`;
+                } else {
+                    html += s;
+                }
+            }
+        }
+        return html;
+    }
+
+    /**
+     * Gắn sự kiện click vào tất cả .zh-word trong một container.
+     * Dùng Event Delegation để tiết kiệm bộ nhớ.
+     */
+    function attachWordClickListeners(container) {
+        if (!container) return;
+        container.removeEventListener('click', _onContainerWordClick);
+        container.addEventListener('click', _onContainerWordClick);
+    }
+
+    function _onContainerWordClick(e) {
+        const span = e.target.closest('.zh-word');
+        if (!span) { closeWordPopup(); return; }
+        e.stopPropagation();
+        const word = span.dataset.word;
+        if (word) handleWordClick(word, span, e);
+    }
+
+    function handleWordClick(word, spanEl, event) {
+        if (activeWordSpan) activeWordSpan.classList.remove('active-word');
+        activeWordSpan = spanEl;
+        spanEl.classList.add('active-word');
+        currentPopupWord = word;
+        showWordPopup(word, spanEl);
+    }
+
+    function showWordPopup(word, anchorEl) {
+        const popup = document.getElementById('word-popup');
+        const pinyinEl = document.getElementById('word-popup-pinyin');
+        const meaningEl = document.getElementById('word-popup-meaning');
+        const loadingEl = document.getElementById('word-popup-loading');
+        const hanziEl = document.getElementById('word-popup-hanzi');
+
+        hanziEl.textContent = word;
+        pinyinEl.textContent = '';
+        meaningEl.textContent = '';
+        loadingEl.style.display = 'block';
+
+        // Lấy Pinyin từ thư viện phía client (không cần API)
+        try {
+            if (window.pinyinPro && window.pinyinPro.pinyin) {
+                const py = window.pinyinPro.pinyin(word, { toneType: 'symbol', type: 'string', separator: ' ' });
+                pinyinEl.textContent = py;
+            } else if (window.PinyinPro && window.PinyinPro.pinyin) {
+                const py = window.PinyinPro.pinyin(word, { toneType: 'symbol', type: 'string', separator: ' ' });
+                pinyinEl.textContent = py;
+            }
+        } catch(e) {}
+
+        popup.classList.add('visible');
+        positionPopup(popup, anchorEl);
+
+        // --- ƯU TIÊN: Lấy nghĩa từ data-meaning (cột Tiếng Việt - Plus) ---
+        // Không cần gọi API, hiển thị tức thì và chính xác theo dữ liệu đã chuẩn hóa
+        const cachedMeaning = anchorEl ? anchorEl.dataset.meaning : null;
+        if (cachedMeaning) {
+            loadingEl.style.display = 'none';
+            meaningEl.textContent = cachedMeaning;
+            // Thêm badge nhỏ để người dùng biết nguồn dữ liệu
+            meaningEl.title = 'Từ cột Tiếng Việt - Plus';
+            positionPopup(popup, anchorEl);
+            return; // Dừng ở đây, không gọi API
+        }
+
+        // --- FALLBACK: Gọi Google Translate API khi không có data-meaning ---
+        meaningEl.title = '';
+        google.script.run
+            .withSuccessHandler(function(res) {
+                loadingEl.style.display = 'none';
+                if (res && res.success) {
+                    meaningEl.textContent = res.meaning || '(Không có nghĩa)';
+                } else {
+                    meaningEl.textContent = '(Không thể dịch)';
+                }
+                positionPopup(popup, anchorEl);
+            })
+            .withFailureHandler(function() {
+                loadingEl.style.display = 'none';
+                meaningEl.textContent = '(Lỗi kết nối)';
+            })
+            .translateWord(word);
+    }
+
+    function positionPopup(popup, anchorEl) {
+        const rect = anchorEl.getBoundingClientRect();
+        const popupWidth = popup.offsetWidth || 200;
+        const popupHeight = popup.offsetHeight || 110;
+        const margin = 8;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        let top = rect.top - popupHeight - margin;
+        let left = rect.left + rect.width / 2 - popupWidth / 2;
+        if (top < margin) top = rect.bottom + margin;
+        if (left + popupWidth > vw - margin) left = vw - popupWidth - margin;
+        if (left < margin) left = margin;
+        if (top + popupHeight > vh - margin) top = vh - popupHeight - margin;
+        popup.style.top = top + 'px';
+        popup.style.left = left + 'px';
+    }
+
+    function closeWordPopup() {
+        document.getElementById('word-popup').classList.remove('visible');
+        if (activeWordSpan) { activeWordSpan.classList.remove('active-word'); activeWordSpan = null; }
+        currentPopupWord = '';
+    }
+
+    function speakPopupWord() {
+        if (!currentPopupWord) return;
+        // Loại bỏ dấu | phòng trường hợp từ vẫn còn ký tự phân tách
+        const text = currentPopupWord.replace(/\|/g, '');
+        if (!text) return;
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.lang = 'zh-CN';
+        msg.rate = parseFloat(document.getElementById('audio-speed').value) || 1.0;
+        if (availableVoices.length > 0 && voiceSelect.value !== '') {
+            const selectedVoice = availableVoices[voiceSelect.value];
+            if (selectedVoice) msg.voice = selectedVoice;
+        }
+        window.speechSynthesis.speak(msg);
+    }
+
+    // Đóng popup khi click ra ngoài
+    document.addEventListener('click', function(e) {
+        const popup = document.getElementById('word-popup');
+        if (!popup.contains(e.target) && !e.target.closest('.zh-word')) {
+            closeWordPopup();
+        }
+    });
+
+    // Hỗ trợ phím Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeWordPopup();
+    });
+
+    function renderSegmentedChinese(containerEl, text) {
+        containerEl.innerHTML = segmentChineseText(text);
+        attachWordClickListeners(containerEl);
+    }
+<\/script>
+    <script>
+    
+
+    
+    let currentSheetName = "";
+    let fullData = [];
+    let exp = 0;
+    let combo = 0;
+    let maxCombo = 0;
+    let activePool = [];
+    let history = [];
+    let idx = -1;
+    let isReviewing = false;
+    let totalQuestions = 0;
+    let progressAlreadySaved = false; 
+    
+    
+    let timerInterval = null;
+    let timeElapsed = 0; 
+    let baseTimeTarget = 15; 
+    let currentBlocks = []; 
+    let constructionScore = 0;
+
+    const viEl = document.getElementById('vi-text');
+    const inpEl = document.getElementById('inp');
+    const resBox = document.getElementById('result-box');
+    const btnMain = document.getElementById('btn-main');
+
+    document.getElementById('audio-speed').addEventListener('input', function (e) {
+        document.getElementById('speed-val').innerText = e.target.value;
+    });
+
+    
+    let availableVoices = [];
+    const voiceSelect = document.getElementById('voice-select');
+
+    function loadVoices() {
+        availableVoices = window.speechSynthesis.getVoices().filter(v => v.lang.includes('zh') || v.lang.includes('cmn'));
+        voiceSelect.innerHTML = '';
+        if (availableVoices.length === 0) {
+            let opt = document.createElement('option');
+            opt.value = "";
+            opt.textContent = "Hệ thống tự nhận (Mặc định)";
+            voiceSelect.appendChild(opt);
+            return;
+        }
+        let hasMale = false;
+        let meijiaIdx = -1;
+
+        availableVoices.forEach((voice, i) => {
+            let opt = document.createElement('option');
+            opt.value = i;
+            let label = voice.name;
+
+            
+            if (label.includes('Meijia')) {
+                meijiaIdx = i;
+            }
+
+            if (label.toLowerCase().includes('female') || label.includes('Xiaoxiao') || label.includes('Ting-Ting') || label.includes('Ya-Ling')) {
+                label = "Nữ (女) - " + label.split(' ')[0];
+            } else if (label.toLowerCase().includes('male') || label.includes('Kangkang') || label.includes('Yunyang') || !!label.match(/Yunjian|Xiaoyou/)) {
+                label = "Nam (男) - " + label.split(' ')[0];
+                hasMale = true;
+            } else {
+                label = "Giọng (语音) - " + label.split(' ')[0];
+            }
+            if (label.length > 25) label = label.substring(0, 23) + "..";
+            opt.textContent = label;
+            voiceSelect.appendChild(opt);
+        });
+
+        
+        if (meijiaIdx !== -1) {
+            voiceSelect.value = meijiaIdx;
+        }
+
+        if (!hasMale && availableVoices.length > 0) {
+            let opt = document.createElement('option');
+            opt.value = "";
+            opt.disabled = true;
+            opt.textContent = "⚠ Máy chưa có Tiếng Nam";
+            voiceSelect.appendChild(opt);
+        }
+    }
+
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    setTimeout(loadVoices, 1000);
+
+    
+    window.addEventListener('load', function () {
+        google.script.run
+            .withSuccessHandler(function (res) {
+                document.getElementById('course-loader').style.display = 'none';
+                if (res.error) {
+                    showToast(res.error, true);
+                } else if (res.sheets && res.sheets.length > 0) {
+                    const container = document.getElementById('course-list');
+                    container.classList.remove('hidden');
+                    res.sheets.forEach(sheetName => {
+                        const btn = document.createElement('button');
+                        btn.className = 'btn-lvl';
+                        btn.innerText = sheetName;
+                        btn.onclick = () => loadData(sheetName);
+                        container.appendChild(btn);
+                    });
+                    const btnUpdate = document.createElement('button');
+                    btnUpdate.className = 'btn-lvl';
+                    btnUpdate.innerText = 'Đang cập nhật...';
+                    btnUpdate.disabled = true;
+                    btnUpdate.style.opacity = '0.5';
+                    btnUpdate.style.cursor = 'not-allowed';
+                    container.appendChild(btnUpdate);
+                } else {
+                    document.getElementById('course-list').innerHTML = "<p>Không tìm thấy bài học nào.<\/p>";
+                }
+            })
+            .withFailureHandler(function (err) {
+                document.getElementById('course-loader').innerHTML = `<p style="color:red">Hệ thống đang bảo trì hoặc mất kết nối mạng. Vui lòng thử tải lại trang.<\/p>`;
+            })
+            .getSheetList();
+    });
+
+    function loadData(sheetName) {
+        currentSheetName = sheetName;
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('loading-screen').classList.remove('hidden');
+        google.script.run
+            .withSuccessHandler(function (data) { onDataLoaded(data, sheetName); })
+            .withFailureHandler(function (err) {
+                showToast("Mất kết nối với máy chủ khi tải nhóm bài. Vui lòng kiểm tra mạng và thử lại.", true);
+                goHome();
+            })
+            .getQuizData(sheetName, currentEmail, currentToken);
+    }
+
+    let groupedUnits = {};
+
+    function onDataLoaded(data, sheetName) {
+        document.getElementById('loading-screen').classList.add('hidden');
+        if (!data || data.length === 0) { showToast("Đang có lỗi kết nối hoặc thiếu thông tin, vui lòng thử lại sau!", true); goHome(); return; }
+        if (data.error) { showToast("Hệ thống quá tải hoặc có lỗi, vui lòng thử lại!", true); goHome(); return; }
+        fullData = data;
+        groupedUnits = {};
+        data.forEach(item => {
+            const u = item.unit || "Chung";
+            if (!groupedUnits[u]) groupedUnits[u] = [];
+            groupedUnits[u].push(item);
+        });
+        document.getElementById('unit-hsk-label').innerText = sheetName;
+        document.getElementById('unit-screen').classList.remove('hidden');
+        renderUnitList();
+        window.location.hash = 'units';
+    }
+
+    function renderUnitListIfActive() {
+        if (!document.getElementById('unit-screen').classList.contains('hidden')) {
+            renderUnitList();
+        }
+    }
+
+    function renderUnitList() {
+        const container = document.getElementById('unit-list');
+        container.innerHTML = "";
+        const prog = globalProgress || {};
+        // Sắp xếp các Unit: Ưu tiên loại Free trước, Pro sau. Nếu cùng loại thì sắp xếp theo tên bài.
+        const sortedUnits = Object.keys(groupedUnits).sort((a, b) => {
+            const aIsPro = groupedUnits[a].some(it => it.type !== 'free');
+            const bIsPro = groupedUnits[b].some(it => it.type !== 'free');
+            
+            if (aIsPro !== bIsPro) {
+                return aIsPro ? 1 : -1; 
+            }
+            return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        sortedUnits.forEach(unitName => {
+            const items = groupedUnits[unitName];
+            const isPremiumUnit = items.some(it => it.type !== 'free');
+            const total = items.length;
+            let learnedCount = 0;
+            items.forEach(it => { if (prog[it.vi]) learnedCount++; });
+            const isDone = learnedCount >= total;
+            const isLocked = isPremiumUnit && !globalIsPremium;
+            const btn = document.createElement('button');
+            btn.className = 'btn-lvl';
+            let contentHTML = `<span>${unitName} ${isLocked ? "🔒" : ""}<\/span>`;
+            contentHTML += `<div style="font-size:0.85rem; margin-top:5px; color:${isDone ? "var(--s)" : "#7f8c8d"}">
+                Tiến độ: ${learnedCount}/${total} ${isDone ? "✅" : ""}
+            <\/div>`;
+            btn.innerHTML = contentHTML;
+            if (isDone) btn.style.borderColor = "var(--s)";
+            if (isLocked) { btn.style.opacity = "0.7"; btn.style.background = "#f4f6f8"; }
+            btn.onclick = () => { if (isLocked) { showPriceModal(); return; } startUnit(unitName); };
+            container.appendChild(btn);
+        });
+        const btnUpdate = document.createElement('button');
+        btnUpdate.className = 'btn-lvl';
+        btnUpdate.innerText = 'Đang cập nhật...';
+        btnUpdate.disabled = true;
+        btnUpdate.style.opacity = '0.5';
+        btnUpdate.style.cursor = 'not-allowed';
+        container.appendChild(btnUpdate);
+    }
+
+    function startUnit(unitName) {
+        document.getElementById('unit-screen').classList.add('hidden');
+        document.getElementById('play-screen').classList.remove('hidden');
+        
+        // Gọn gàng UI khi vào học
+        document.getElementById('top-header-content').classList.add('hidden');
+        document.getElementById('btn-toggle-header').classList.remove('hidden');
+        document.getElementById('btn-toggle-header').innerText = "▼ Mở Menu";
+        document.getElementById('bottom-tools-content').classList.add('hidden');
+        document.getElementById('btn-toggle-tools').classList.remove('hidden');
+        document.getElementById('btn-toggle-tools').innerText = "⚙️ Mở rộng Công cụ & Điều hướng";
+
+        document.getElementById('hsk-label').innerText = `${currentSheetName} - ${unitName}`;
+        activePool = [...groupedUnits[unitName]];
+        totalQuestions = activePool.length;
+        history = []; idx = -1; exp = 0; combo = 0; maxCombo = 0;
+        mistakesInLesson = 0; sessionStartTime = Date.now();
+        progressAlreadySaved = false; 
+        document.getElementById('exp-val').innerText = exp;
+        document.getElementById('combo-badge').classList.remove('active');
+        goNext();
+        window.location.hash = 'quiz';
+    }
+
+    function goHome(fromHash = false) {
+        document.getElementById('play-screen').classList.add('hidden');
+        document.getElementById('victory-screen').classList.add('hidden');
+        document.getElementById('unit-screen').classList.add('hidden');
+        document.getElementById('start-screen').classList.remove('hidden');
+
+        
+        document.getElementById('top-header-content').classList.remove('hidden');
+        document.getElementById('btn-toggle-header').classList.add('hidden');
+
+        activePool = []; history = []; idx = -1; exp = 0; combo = 0; maxCombo = 0;
+        mistakesInLesson = 0; sessionStartTime = 0;
+        document.getElementById('exp-val').innerText = exp;
+        document.getElementById('combo-badge').classList.remove('active');
+        isReviewing = false; inpEl.value = ""; resBox.style.display = "none";
+        document.getElementById('progress-fill').style.width = "0%";
+        if (fromHash !== true) window.location.hash = 'home';
+    }
+
+    function backToUnitList(fromHash = false) {
+        
+        if (!progressAlreadySaved && (exp > 0 || Object.keys(globalProgress).length > 0)) {
+            saveProgressAndStats(false);
+        }
+        document.getElementById('play-screen').classList.add('hidden');
+        document.getElementById('victory-screen').classList.add('hidden');
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('loading-screen').classList.add('hidden');
+        document.getElementById('unit-screen').classList.remove('hidden');
+
+        
+        document.getElementById('top-header-content').classList.remove('hidden');
+        document.getElementById('btn-toggle-header').classList.add('hidden');
+
+        activePool = []; history = []; idx = -1; exp = 0; combo = 0; maxCombo = 0;
+        mistakesInLesson = 0; sessionStartTime = 0;
+        document.getElementById('exp-val').innerText = exp;
+        document.getElementById('combo-badge').classList.remove('active');
+        isReviewing = false; inpEl.value = ""; resBox.style.display = "none";
+        document.getElementById('progress-fill').style.width = "0%";
+        renderUnitListIfActive();
+        if (fromHash !== true) window.location.hash = 'units';
+    }
+
+    
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(type) {
+        try {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(1200, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.3);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            }
+        } catch (e) { console.warn("Audio disabled", e); }
+    }
+
+    function handleLogic() {
+        if (!isReviewing) {
+            if (activeMode === 'construction' || inpEl.value.trim() !== "") {
+                checkAnswer(false);
+            }
+        } else {
+            goNext();
+        }
+    }
+
+    function normalize(str) {
+        if (!str) return "";
+        
+        
+        return str.trim().toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+    }
+    
+    
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeElapsed = 0;
+        
+        
+        updateTimerUI();
+        timerInterval = setInterval(() => {
+            timeElapsed += 0.1;
+            updateTimerUI();
+        }, 100);
+    }
+    
+    function stopTimer() { clearInterval(timerInterval); }
+    
+    function updateTimerUI() {
+        const fill = document.getElementById('timer-fill');
+        baseTimeTarget = activeMode === 'construction' ? 20 : 15;
+        const pct = Math.min(100, (timeElapsed / baseTimeTarget) * 100);
+        fill.style.width = pct + '%';
+        if(pct < 50) fill.style.background = '#2ecc71'; 
+        else if(pct < 80) fill.style.background = '#f39c12'; 
+        else fill.style.background = '#e74c3c'; 
+    }
+
+    
+    function prepareConstructionTask(q) {
+        const target = document.getElementById('construction-target');
+        const pool = document.getElementById('construction-pool');
+        target.innerHTML = ''; pool.innerHTML = '';
+        currentBlocks = [];
+
+        
+        
+        const isMeaningfulSegment = s => /[\p{L}\p{N}]/u.test(s);
+
+        let segments = [];
+        let meaningMap = {};
+        if (q.zh.includes('|')) {
+            const zhSegsRaw = q.zh.split('|'); 
+
+            
+            
+            const vpSegsRaw = (q.viPlus && q.viPlus.includes('|'))
+                ? q.viPlus.split('|')
+                : [];
+            const vpLengthMatches = vpSegsRaw.length === zhSegsRaw.length;
+
+            let filteredIdx = 0;
+            zhSegsRaw.forEach((seg, i) => {
+                if (seg.trim() === '') return; 
+                if (!isMeaningfulSegment(seg)) return; 
+                
+                segments.push(seg);
+                if (vpLengthMatches && vpSegsRaw[i] && vpSegsRaw[i].trim()) {
+                    meaningMap[filteredIdx] = vpSegsRaw[i].trim();
+                }
+                filteredIdx++;
+            });
+        } else {
+            if ('Segmenter' in Intl) {
+                const segmenter = new Intl.Segmenter('zh', { granularity: 'word' });
+                segments = [...segmenter.segment(q.zh)]
+                    .map(s => s.segment)
+                    .filter(s => s.trim() !== "" && isMeaningfulSegment(s));
+            } else {
+                segments = q.zh.split('').filter(s => s.trim() !== "" && isMeaningfulSegment(s));
+            }
+        }
+
+        
+        if (segments.length === 1) {
+            
+            const correctZh = segments[0];
+            const correctMeaning = meaningMap[0] || '';
+
+            
+            
+            const getCleanZh = (zhStr) => {
+                if (zhStr.includes('|')) {
+                    return zhStr.split('|')
+                        .filter(s => s.trim() !== '' && isMeaningfulSegment(s))
+                        .join('');
+                }
+                return zhStr.replace(/[^\p{L}\p{N}]/gu, '').trim();
+            };
+
+            let candidatePool = [];
+            const currentUnitName = q.unit || '';
+            if (currentUnitName && groupedUnits[currentUnitName]) {
+                groupedUnits[currentUnitName].forEach(item => {
+                    const itemZh = getCleanZh(item.zh);
+                    if (itemZh && itemZh !== correctZh) {
+                        candidatePool.push({ zh: itemZh, vi: item.vi });
+                    }
+                });
+            }
+            if (candidatePool.length < 3 && fullData.length > 3) {
+                fullData.forEach(item => {
+                    const itemZh = getCleanZh(item.zh);
+                    if (itemZh && itemZh !== correctZh && !candidatePool.some(c => c.zh === itemZh)) {
+                        candidatePool.push({ zh: itemZh, vi: item.vi });
+                    }
+                });
+            }
+            for (let i = candidatePool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [candidatePool[i], candidatePool[j]] = [candidatePool[j], candidatePool[i]];
+            }
+            const distractorItems = candidatePool.slice(0, 3);
+            const choices = [
+                { zh: correctZh, meaning: correctMeaning, isCorrect: true },
+                ...distractorItems.map(d => ({ zh: d.zh, meaning: '', isCorrect: false }))
+            ];
+            for (let i = choices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [choices[i], choices[j]] = [choices[j], choices[i]];
+            }
+            choices.forEach(choice => {
+                const btn = document.createElement('div');
+                btn.className = 'word-block in-pool';
+                btn.innerText = choice.zh;
+                if (choice.meaning) btn.dataset.meaning = choice.meaning;
+                btn.onclick = () => {
+                    if (isReviewing) return;
+                    if (btn.classList.contains('in-pool')) {
+                        const existingInTarget = target.querySelectorAll('.word-block.in-target');
+                        existingInTarget.forEach(b => {
+                            b.classList.remove('in-target');
+                            b.classList.add('in-pool');
+                            pool.appendChild(b);
+                        });
+                        btn.classList.remove('in-pool');
+                        btn.classList.add('in-target');
+                        target.appendChild(btn);
+                    } else if (btn.classList.contains('in-target')) {
+                        btn.classList.remove('in-target');
+                        btn.classList.add('in-pool');
+                        pool.appendChild(btn);
+                    }
+                };
+                pool.appendChild(btn);
+            });
+            return;
+        }
+
+        
+        
+        const allBlocks = [...segments];
+        for (let i = allBlocks.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [allBlocks[i], allBlocks[j]] = [allBlocks[j], allBlocks[i]];
+        }
+
+        allBlocks.forEach((text, i) => {
+            const btn = document.createElement('div');
+            btn.className = 'word-block in-pool';
+            btn.innerText = text;
+            
+            const segIdx = segments.indexOf(text);
+            if (segIdx !== -1 && meaningMap[segIdx] !== undefined) {
+                btn.dataset.meaning = meaningMap[segIdx];
+            }
+            
+            btn.onclick = () => {
+                if (isReviewing) return;
+                if (btn.classList.contains('in-pool')) {
+                    btn.classList.remove('in-pool');
+                    btn.classList.add('in-target');
+                    target.appendChild(btn);
+                } else if (btn.classList.contains('in-target')) {
+                    btn.classList.remove('in-target');
+                    btn.classList.add('in-pool');
+                    pool.appendChild(btn);
+                }
+            };
+            pool.appendChild(btn);
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (activeMode === 'construction' && !isReviewing) {
+            if (e.key === 'Backspace') {
+                 const targetBlocks = document.getElementById('construction-target').querySelectorAll('.word-block.in-target');
+                 if (targetBlocks.length > 0) {
+                     targetBlocks[targetBlocks.length - 1].click();
+                 }
+            }
+        }
+    });
+
+    function getHighlightedAnswerHTML(user, q) {
+        const isPinyinInput = /[a-z]/i.test(user);
+        let userNorm = normalize(user); 
+        let uIdx = 0; 
+        let finalZhHTML = "";
+        let finalPinyinHTML = "";
+
+        
+
+        function renderChar(ch) {
+            if (ch === '|') return ''; 
+            if (!/[\p{L}\p{N}]/u.test(ch)) {
+                
+                return `<span style="color:var(--s); font-weight:bold">${ch}<\/span>`;
+            }
+            // Chữ / số → so sánh
+            let out;
+            if (uIdx < userNorm.length && userNorm[uIdx] === ch.toLowerCase()) {
+                out = `<span style="color:var(--s); font-weight:bold">${ch}<\/span>`;
+            } else {
+                out = `<span style="color:var(--w); font-weight:bold">${ch}<\/span>`;
+            }
+            uIdx++;
+            return out;
+        }
+
+         
+        function renderString(str) {
+            let html = '';
+            for (const ch of str) html += renderChar(ch);
+            return html;
+        }
+
+        if (isPinyinInput && q.pinyin) {
+            
+            finalPinyinHTML = renderString(q.pinyin);
+            finalZhHTML = segmentChineseText(q.zh); 
+        } else {
+            
+            if (q.zh.includes('|')) {
+                
+                
+                let meaningMap = {};
+                if (q.viPlus && q.viPlus.includes('|')) {
+                    const vpSegs = q.viPlus.split('|');
+                    const zhSegs = q.zh.split('|');
+                    if (vpSegs.length === zhSegs.length) {
+                        zhSegs.forEach((_, i) => { if (vpSegs[i]) meaningMap[i] = vpSegs[i].trim(); });
+                    }
+                }
+                const segs = q.zh.split('|').filter(s => s.trim());
+                let segIdx = 0;
+                for (const seg of segs) {
+                    if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(seg)) {
+                        const meaning = meaningMap[segIdx] || '';
+                        const dataMeaning = meaning ? ` data-meaning="${meaning.replace(/"/g, '&quot;')}"` : '';
+                        finalZhHTML += `<span class="zh-word" data-word="${seg.replace(/"/g, '&quot;')}"${dataMeaning}>${renderString(seg)}<\/span>`;
+                    } else {
+                        finalZhHTML += renderString(seg);
+                    }
+                    segIdx++;
+                }
+            } else if ('Segmenter' in Intl) {
+                // Dùng Intl.Segmenter để tách từ tự động
+                const segmenter = new Intl.Segmenter('zh', { granularity: 'word' });
+                for (const seg of segmenter.segment(q.zh)) {
+                    const s = seg.segment;
+                    if (seg.isWordLike && /[\u4e00-\u9fff\u3400-\u4dbf]/.test(s)) {
+                        finalZhHTML += `<span class="zh-word" data-word="${s.replace(/"/g, '&quot;')}">${renderString(s)}<\/span>`;
+                    } else {
+                        finalZhHTML += renderString(s);
+                    }
+                }
+            } else {
+                // Fallback: từng ký tự một
+                for (const ch of q.zh) {
+                    if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(ch)) {
+                        finalZhHTML += `<span class="zh-word" data-word="${ch}">${renderChar(ch)}<\/span>`;
+                    } else {
+                        finalZhHTML += renderChar(ch);
+                    }
+                }
+            }
+            finalPinyinHTML = q.pinyin || "";
+        }
+
+        let html = `<b id="result-zh-wrong">${finalZhHTML}<\/b>`;
+        if (finalPinyinHTML) html += `<br><i>${finalPinyinHTML}<\/i>`;
+        return html;
+    }
+
+    function checkAnswer() {
+        stopTimer();
+        const q = history[idx];
+        let user = "";
+        
+        if (activeMode === 'construction') {
+            const targetBlocks = document.getElementById('construction-target').querySelectorAll('.word-block');
+            Array.from(targetBlocks).forEach(b => {
+                let txt = b.innerText.replace(/[\d\n]/g, '').trim();
+                user += txt;
+            });
+            user = normalize(user);
+        } else {
+            user = normalize(inpEl.value);
+        }
+
+        const correctZh = normalize(q.zh);
+        const correctPinyin = q.pinyin ? normalize(q.pinyin) : "";
+        resBox.style.display = "block";
+        
+        let isCorrect = (user === correctZh);
+        if (!isCorrect && correctPinyin && user === correctPinyin) isCorrect = true;
+
+        if (isCorrect) {
+            let speedBonus = timeElapsed < (baseTimeTarget * 0.5) ? 5 : 0;
+            exp += (10 + speedBonus); 
+            combo++;
+            if (combo > maxCombo) maxCombo = combo;
+            playBeep('correct');
+            const zhSegmented = segmentChineseText(q.zh, q.viPlus); // truyền viPlus
+            resBox.innerHTML = `Chính xác! ✓ <span style="font-size:0.8rem; color:#e67e22">(+${10 + speedBonus} EXP)<\/span><br><b id="result-zh-correct">${zhSegmented}<\/b>` + (q.pinyin ? `<br><i>${q.pinyin}<\/i>` : '');
+            attachWordClickListeners(document.getElementById('result-zh-correct'));
+            resBox.className = 'res-correct';
+            if (!globalProgress[q.vi]) {
+                globalProgress[q.vi] = true;
+                // Chỉ backup local, KHÔNG gọi API server - sẽ lưu batch 1 lần khi kết thúc bài
+                backupProgressLocal();
+            }
+            activePool = activePool.filter(item => item.vi !== q.vi);
+        } else {
+            exp = Math.max(0, exp - 2); combo = 0;
+            playBeep('wrong');
+            let msg = `Chưa đúng!`;
+            let answerStr = "";
+            if (!isCorrect && user) {
+                answerStr = getHighlightedAnswerHTML(user, q);
+            } else {
+                const zhSegWrong = segmentChineseText(q.zh, q.viPlus); // truyền viPlus
+                answerStr = `<b id="result-zh-wrong">${zhSegWrong}<\/b>` + (q.pinyin ? `<br><i>${q.pinyin}<\/i>` : '');
+            }
+            resBox.innerHTML = `${msg}<br>Đáp án: ${answerStr}`;
+            attachWordClickListeners(document.getElementById('result-zh-wrong'));
+            resBox.className = 'res-wrong';
+            if (!isCorrect) {
+                mistakesInLesson++;
+                inpEl.classList.add('shake', 'wrong-flash');
+                setTimeout(() => inpEl.classList.remove('shake', 'wrong-flash'), 500);
+            }
+        }
+        playCurrentAudio();
+        inpEl.disabled = true;
+        isReviewing = true;
+        btnMain.innerText = "Tiếp theo (Enter)";
+        updateStats();
+    }
+
+
+
+    // Lưu backup tiến trình vào localStorage sau mỗi câu đúng
+    // Không gọi API server - nhanh, không bao giờ block UI
+    function backupProgressLocal() {
+        if (!isProgressLoaded) return; // Bảo vệ: chưa tải xong server data thì không ghi
+        try {
+            localStorage.setItem('hsk_progress_temp', JSON.stringify(globalProgress));
+        } catch(e) {
+            console.warn('localStorage backup failed:', e);
+        }
+    }
+
+    // Lưu 1 lần duy nhất lên server khi bài kết thúc hoặc người dùng thoát ngang
+    // isVictory: true = màn hình chiến thắng, false = thoát ngang
+    function saveProgressAndStats(isVictory) {
+        if (progressAlreadySaved) return; // Chống lưu trùng
+        progressAlreadySaved = true;
+
+        if (!currentEmail || !currentToken) return;
+
+        const playTimeSeconds = (Date.now() - sessionStartTime) / 1000;
+        const gameStats = isVictory ? {
+            totalQuestions: totalQuestions,
+            isPerfect: (mistakesInLesson === 0),
+            playTimeSeconds: playTimeSeconds
+        } : null;
+
+        // Gọi song song cả hai: lưu tiến trình câu hỏi + cập nhật stats/exp
+        google.script.run
+            .withSuccessHandler(function(r) {
+                if (r && r.error === "UNAUTHORIZED") { handleUnauthorized(); return; }
+                // Silent on success or other errors
+            })
+            .saveUserProgress(currentEmail, currentToken, globalProgress);
+
+        if (isVictory && gameStats) {
+            google.script.run
+                .withSuccessHandler(function(res) {
+                    if (res && res.success) {
+                        // Cập nhật âm thầm badge danh hiệu trên UI
+                        const userBadge = document.getElementById('user-title-badge');
+                        if (userBadge) userBadge.innerText = res.title.split(' ')[0];
+                    }
+                })
+                .updateUserStats(currentEmail, currentToken, exp, maxCombo, true, gameStats);
+        }
+    }
+
+    function playCurrentAudio() {
+        if (idx < 0 || idx >= history.length) return;
+        const rawText = history[idx].zh;
+        if (!rawText) return;
+        // Loại bỏ dấu | (phân tách admin) để giọng đọc liền mạch, tự nhiên
+        const text = rawText.replace(/\|/g, '');
+        window.speechSynthesis.cancel();
+        let msg = new SpeechSynthesisUtterance(text);
+        msg.lang = 'zh-CN';
+        msg.rate = parseFloat(document.getElementById('audio-speed').value) || 1.0;
+        if (availableVoices.length > 0 && voiceSelect.value !== "") {
+            const selectedVoice = availableVoices[voiceSelect.value];
+            if (selectedVoice) msg.voice = selectedVoice;
+        }
+        window.speechSynthesis.speak(msg);
+    }
+
+    function goNext() {
+        if (idx >= history.length - 1) {
+            if (activePool.length === 0) {
+                document.getElementById('play-screen').classList.add('hidden');
+                document.getElementById('victory-screen').classList.remove('hidden');
+                document.getElementById('final-exp').innerText = exp;
+                document.getElementById('final-combo').innerText = maxCombo;
+                const quotes = [
+                    "学而不思则罔，思而不学则殆。 (Học mà không nghĩ thì vô ích, nghĩ mà không học thì hiểm nghèo.)",
+                    "千里之行，始于足下。 (Hành trình ngàn dặm bắt đầu từ một bước chân.)",
+                    "读书破万卷，下笔如有神。 (Đọc vạn cuốn sách, vung bút như có thần.)",
+                    "锲而不舍，金石可镂。 (Kiên trì không ngừng, sắt đá cũng mài mòn.)"
+                ];
+                document.getElementById('quote-text').innerText = quotes[Math.floor(Math.random() * quotes.length)];
+
+                // Lưu tiến trình + stats 1 lần duy nhất khi xuất hiện Victory screen
+                saveProgressAndStats(true);
+
+                if (typeof confetti === 'function') {
+                    var duration = 3000;
+                    var end = Date.now() + duration;
+                    (function frame() {
+                        confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, zIndex: 1000 });
+                        confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, zIndex: 1000 });
+                        if (Date.now() < end) requestAnimationFrame(frame);
+                    }());
+                }
+                return;
+            }
+            let nextQ = activePool[Math.floor(Math.random() * activePool.length)];
+            if (activePool.length > 1 && history[idx] && nextQ.vi === history[idx].vi) {
+                const alt = activePool.find(i => i.vi !== history[idx].vi);
+                if (alt) nextQ = alt;
+            }
+            history.push(nextQ);
+        }
+        idx++;
+        render();
+    }
+
+    function goBack() {
+        if (idx > 0) { idx--; render(); }
+    }
+
+    function render() {
+        isReviewing = false;
+        resBox.style.display = "none";
+        resBox.className = "";
+        resBox.innerHTML = "";
+        closeWordPopup();
+        const q = history[idx];
+        viEl.innerText = q.vi;
+        
+        if (activeMode === 'construction') {
+            document.getElementById('typing-area').classList.add('hidden');
+            document.getElementById('construction-area').classList.remove('hidden');
+            prepareConstructionTask(q);
+        } else {
+            document.getElementById('typing-area').classList.remove('hidden');
+            document.getElementById('construction-area').classList.add('hidden');
+            inpEl.value = "";
+            inpEl.disabled = false;
+            setTimeout(() => inpEl.focus(), 50);
+        }
+        
+        btnMain.innerText = "Kiểm tra (Enter)";
+        updateStats();
+
+        // Tự động đọc tiếng Việt nếu muốn (bỏ qua, chỉ hiện chữ)
+        // start timer
+        startTimer();
+    }
+
+    function updateStats() {
+        const rem = activePool.length;
+        document.getElementById('rem-count').innerText = rem;
+        const percent = ((totalQuestions - rem) / totalQuestions) * 100;
+        document.getElementById('progress-fill').style.width = percent + "%";
+        document.getElementById('exp-val').innerText = exp;
+        const cb = document.getElementById('combo-badge');
+        if (combo >= 2) {
+            cb.innerText = `Combo x${combo} 🔥`;
+            cb.classList.add('active');
+            cb.classList.remove('pop');
+            void cb.offsetWidth;
+            cb.classList.add('pop');
+        } else {
+            cb.classList.remove('active', 'pop');
+        }
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); handleLogic(); }
+        else if (e.key === 'Control') { e.preventDefault(); playCurrentAudio(); }
+    });
+
+    // Lưu tiến trình khi người dùng chuyển tab/ tắt màn hình / đóng trình duyệt
+    // Đây là cơ chế hiện đại thay thế onbeforeunload (vốn bị nhiều trình duyệt chặn)
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden') {
+            // Chỉ lưu nếu đang ở giữa bài học (activePool có dữ liệu) và chưa lưu từ Victory
+            const isPlayingLesson = activePool.length > 0 || (history.length > 0 && !progressAlreadySaved);
+            if (isPlayingLesson) {
+                saveProgressAndStats(false);
+            }
+        }
+    });
+    // --- FULLSCREEN TOGGLE LOGIC ---
+    function initFullscreen() {
+        // Tạo nút bấm Fullscreen
+        const fsBtn = document.createElement('div');
+        fsBtn.id = 'fs-toggle-btn';
+        fsBtn.innerHTML = '⛶'; // Biểu tượng fullscreen
+        fsBtn.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 44px;
+            height: 44px;
+            background: rgba(33, 150, 243, 0.8);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        `;
+        
+        fsBtn.onclick = function() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
+                // Vào toàn màn hình
+                const el = document.documentElement;
+                if (el.requestFullscreen) el.requestFullscreen();
+                else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+                else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+                else if (el.msRequestFullscreen) el.msRequestFullscreen();
+                fsBtn.innerHTML = '✕';
+                fsBtn.style.background = 'rgba(231, 76, 60, 0.8)';
+            } else {
+                // Thoát toàn màn hình
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+                else if (document.msExitFullscreen) document.msExitFullscreen();
+                fsBtn.innerHTML = '⛶';
+                fsBtn.style.background = 'rgba(33, 150, 243, 0.8)';
+            }
+        };
+
+        // Lắng nghe sự kiện thay đổi fullscreen để cập nhật icon (nếu người dùng bấm nút Esc chẳng hạn)
+        const updateFsIcon = () => {
+            const isFs = document.fullscreenElement || document.webkitFullscreenElement;
+            fsBtn.innerHTML = isFs ? '✕' : '⛶';
+            fsBtn.style.background = isFs ? 'rgba(231, 76, 60, 0.8)' : 'rgba(33, 150, 243, 0.8)';
+        };
+        document.addEventListener('fullscreenchange', updateFsIcon);
+        document.addEventListener('webkitfullscreenchange', updateFsIcon);
+
+        document.body.appendChild(fsBtn);
+    }
+
+    // Khởi chạy sau khi trang load
+    window.addEventListener('load', initFullscreen);
+<\/script>
+
+<\/body>
+
+<\/html>

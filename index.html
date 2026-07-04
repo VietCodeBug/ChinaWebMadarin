@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Phản Xạ Tiếng Trung - Cá nhân</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CDN scripts for Confetti & Pinyin, fallback handled gracefully -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js" defer></script>
+
+    <style>
+        :root {
+            /* Light theme colors */
+            --bg-gradient-start: #f3f4f6;
+            --bg-gradient-end: #e5e7eb;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(255, 255, 255, 0.6);
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: rgba(37, 99, 235, 0.1);
+            --success: #10b981;
+            --success-bg: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            --success-border: #a7f3d0;
+            --success-text: #065f46;
+            --error: #ef4444;
+            --error-bg: linear-gradient(135deg, #fef2f2, #fee2e2);
+            --error-border: #fca5a5;
+            --error-text: #991b1b;
+            --amber: #d97706;
+            --amber-light: #fef3c7;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --glass-blur: blur(12px);
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme colors */
+            --bg-gradient-start: #0f172a;
+            --bg-gradient-end: #1e293b;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #60a5fa;
+            --primary-light: rgba(59, 130, 246, 0.15);
+            --success: #34d399;
+            --success-bg: linear-gradient(135deg, #064e3b, #022c22);
+            --success-border: #047857;
+            --success-text: #a7f3d0;
+            --error: #f87171;
+            --error-bg: linear-gradient(135deg, #7f1d1d, #450a0a);
+            --error-border: #991b1b;
+            --error-text: #fca5a5;
+            --amber: #fbbf24;
+            --amber-light: rgba(251, 191, 36, 0.15);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            min-height: 100vh;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            padding: 2rem;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header controls */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+
+        .btn-back-home {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .btn-back-home:hover {
+            color: var(--primary);
+        }
+
+        .theme-toggle-btn {
+            background: rgba(0, 0, 0, 0.05);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-main);
+            font-size: 1.2rem;
+        }
+
+        [data-theme="dark"] .theme-toggle-btn {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Screen Styles */
+        .screen {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Home Screen Lists */
+        .course-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        @media (min-width: 480px) {
+            .course-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .btn-course-select, .btn-unit-select {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        }
+
+        [data-theme="dark"] .btn-course-select, [data-theme="dark"] .btn-unit-select {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .btn-course-select:hover, .btn-unit-select:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.1);
+        }
+
+        .course-title, .unit-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .course-meta, .unit-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Units Grid */
+        .units-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            max-height: 450px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        @media (min-width: 480px) {
+            .units-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .unit-completed-badge {
+            color: var(--success);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        /* Play Screen Header & Stats */
+        .play-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+        }
+
+        .stats-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        [data-theme="dark"] .progress-bar-container {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), #a855f7);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Main Quiz Box */
+        .prompt-container {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        .prompt-vi-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .prompt-vi-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        /* Inputs Area */
+        .input-container {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Typing mode */
+        .typing-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.4rem;
+            border: 2px solid var(--card-border);
+            border-radius: 16px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--text-main);
+            text-align: center;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        [data-theme="dark"] .typing-input {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .typing-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Construction mode */
+        .construction-target {
+            min-height: 70px;
+            border: 2px dashed var(--card-border);
+            border-radius: 16px;
+            padding: 0.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        [data-theme="dark"] .construction-target {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .construction-pool {
+            min-height: 70px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+        }
+
+        .word-block {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 0.6rem 1rem;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            user-select: none;
+            transition: transform 0.1s, box-shadow 0.1s, background-color 0.1s;
+        }
+
+        .word-block:active {
+            transform: scale(0.95);
+        }
+
+        .word-block.in-target {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        /* Animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        .shake {
+            animation: shake 0.4s ease;
+        }
+
+        /* Results Box */
+        .result-box {
+            border-radius: 18px;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            display: none;
+        }
+
+        .result-status {
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-chinese-sentence {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.02em;
+        }
+
+        .result-pinyin-sentence {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        .zh-word {
+            display: inline-block;
+            cursor: pointer;
+            border-radius: 6px;
+            padding: 0 2px;
+            transition: background-color 0.15s, color 0.15s;
+            position: relative;
+        }
+
+        .zh-word:hover {
+            background-color: rgba(37, 99, 235, 0.15);
+            color: var(--primary);
+        }
+
+        .char-correct {
+            color: var(--success);
+        }
+
+        .char-incorrect {
+            color: var(--error);
+            text-decoration: underline;
+        }
+
+        /* Bottom Controls */
+        .play-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: auto;
+        }
+
+        .btn-check-main {
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 16px;
+            padding: 1.1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-check-main:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-check-main:active {
+            transform: scale(0.98);
+        }
+
+        /* Audio and Options Drawer */
+        .option-panel {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 16px;
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        [data-theme="dark"] .option-panel {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .audio-btn-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-audio-play {
+            background: #06b6d4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .btn-audio-play:hover {
+            filter: brightness(1.1);
+        }
+
+        .audio-speed-select, .voice-select, .mode-select {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Dictionary Word Popup Tooltip */
+        .word-popup {
+            position: absolute;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            padding: 0.8rem 1rem;
+            z-index: 1000;
+            max-width: 250px;
+            display: none;
+            pointer-events: auto;
+            transform: translate(-50%, -100%);
+            margin-top: -10px;
+            animation: fadeIn 0.15s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -95%); }
+            to { opacity: 1; transform: translate(-50%, -100%); }
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 0.4rem;
+            margin-bottom: 0.4rem;
+            gap: 1rem;
+        }
+
+        .popup-hanzi {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .btn-popup-speak {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .btn-popup-speak:hover {
+            color: var(--primary);
+        }
+
+        .popup-pinyin {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--amber);
+            margin-bottom: 0.3rem;
+        }
+
+        .popup-meaning {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        .popup-loading {
+            font-size: 0.85rem;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        /* Victory Screen */
+        .victory-screen {
+            text-align: center;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .victory-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--success);
+        }
+
+        .victory-trophy {
+            font-size: 5rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .victory-stats {
+            display: flex;
+            gap: 2rem;
+            background: rgba(0, 0, 0, 0.03);
+            padding: 1rem 2rem;
+            border-radius: 16px;
+        }
+
+        [data-theme="dark"] .victory-stats {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .victory-stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .victory-stat-val {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .victory-stat-lbl {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .quote-box {
+            font-family: 'Mali', cursive;
+            background: var(--amber-light);
+            border-left: 4px solid var(--amber);
+            padding: 1rem;
+            border-radius: 8px;
+            max-width: 80%;
+            margin: 1rem auto;
+            text-align: left;
+        }
+
+        .quote-zh {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.3rem;
+        }
+
+        .quote-vi {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .btn-victory-home {
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-victory-home:hover {
+            background: #059669;
+        }
+
+        .btn-victory-home:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header controls -->
+        <div class="app-header">
+            <button id="btn-back-home" class="btn-back-home hidden" onclick="navigateBack()">
+                <span>←</span> Quay lại
+            </button>
+            <div style="flex-grow: 1;"></div>
+            <button class="theme-toggle-btn" onclick="toggleTheme()" title="Đổi giao diện">🌓</button>
+        </div>
+
+        <!-- 1. Home / Course Selector Screen -->
+        <div id="screen-home" class="screen">
+            <h1>Phản Xạ Tiếng Trung</h1>
+            <p class="subtitle">Ứng dụng tự học phản xạ điền từ tiếng Trung offline</p>
+            <div id="course-list" class="course-grid">
+                <!-- Javascript will populate cards here -->
+            </div>
+        </div>
+
+        <!-- 2. Unit Selection Screen -->
+        <div id="screen-units" class="screen hidden">
+            <h1 id="unit-header-title">Danh sách bài học</h1>
+            <p class="subtitle" id="unit-header-subtitle">Chọn bài học để bắt đầu luyện tập</p>
+            <div id="unit-list" class="units-grid">
+                <!-- Javascript will populate unit buttons here -->
+            </div>
+        </div>
+
+        <!-- 3. Play Screen -->
+        <div id="screen-play" class="screen hidden">
+            <div class="play-header">
+                <span id="play-level-badge" class="level-badge">HSK1</span>
+                
+                <!-- Stats bar -->
+                <div class="stats-bar">
+                    <div class="stats-item"><span>🏆</span> <span id="lbl-exp">0</span> EXP</div>
+                    <div class="stats-item"><span>🔥</span> <span id="lbl-combo">0</span> Combo</div>
+                    <div class="stats-item"><span>📝</span> Còn lại: <span id="lbl-remaining">0</span></div>
+                </div>
+
+                <!-- Progress bar -->
+                <div class="progress-bar-container">
+                    <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                </div>
+            </div>
+
+            <!-- Quiz Display area -->
+            <div class="prompt-container">
+                <div class="prompt-vi-label">Nghĩa tiếng Việt</div>
+                <div id="prompt-text" class="prompt-vi-text">Yêu</div>
+            </div>
+
+            <!-- Answer inputs -->
+            <div class="input-container">
+                <!-- Typing Input -->
+                <div id="area-typing">
+                    <input type="text" id="typing-input" class="typing-input" placeholder="Nhập chữ Hán hoặc Pinyin tương ứng..." autocomplete="off">
+                </div>
+
+                <!-- Construction Input -->
+                <div id="area-construction" class="hidden">
+                    <div id="construction-target" class="construction-target">
+                        <!-- Placed blocks -->
+                    </div>
+                    <div id="construction-pool" class="construction-pool">
+                        <!-- Source blocks to click -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback box -->
+            <div id="result-box" class="result-box">
+                <div id="result-status" class="result-status">Chính xác!</div>
+                <div id="result-chinese" class="result-chinese-sentence">爱</div>
+                <div id="result-pinyin" class="result-pinyin-sentence">ài</div>
+            </div>
+
+            <!-- Action controls -->
+            <div class="play-controls">
+                <button id="btn-action" class="btn-check-main" onclick="handleActionClick()">Kiểm tra (Enter)</button>
+
+                <!-- Tools options -->
+                <div class="option-panel">
+                    <div class="audio-btn-group">
+                        <button class="btn-audio-play" onclick="playSpeech()" title="Nghe phát âm (Ctrl)">🔊</button>
+                        <select id="audio-speed" class="audio-speed-select" title="Tốc độ đọc">
+                            <option value="0.5">0.5x</option>
+                            <option value="0.75">0.75x</option>
+                            <option value="1.0" selected>1.0x</option>
+                        </select>
+                        <select id="voice-select" class="voice-select" title="Giọng đọc">
+                            <option value="">Chọn giọng...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="mode-select" class="mode-select" onchange="toggleMode(this.value)" title="Chế độ học">
+                            <option value="typing" selected>Gõ bàn phím (Typing)</option>
+                            <option value="construction">Ghép khối từ (Blocks)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Victory / Score Screen -->
+        <div id="screen-victory" class="screen hidden">
+            <div class="victory-screen">
+                <div class="victory-trophy">🏆</div>
+                <h2 class="victory-title">Hoàn thành bài học!</h2>
+                
+                <div class="victory-stats">
+                    <div class="victory-stat-item">
+                        <span id="victory-exp" class="victory-stat-val">120</span>
+                        <span class="victory-stat-lbl">EXP nhận được</span>
+                    </div>
+                    <div class="victory-stat-item">
+                        <span id="victory-combo" class="victory-stat-val">12</span>
+                        <span class="victory-stat-lbl">Combo tối đa</span>
+                    </div>
+                </div>
+
+                <div class="quote-box">
+                    <div id="quote-zh" class="quote-zh"></div>
+                    <div id="quote-vi" class="quote-vi"></div>
+                </div>
+
+                <button class="btn-victory-home" onclick="goHome()">Quay về trang chủ</button>
+            </div>
+        </div>
+
+        <!-- Float dictionary lookup popup -->
+        <div id="word-popup" class="word-popup">
+            <div class="popup-header">
+                <span id="popup-hanzi" class="popup-hanzi">字</span>
+                <button class="btn-popup-speak" onclick="speakPopupWord()" title="Nghe từ này">🔊</button>
+            </div>
+            <div id="popup-pinyin" class="popup-pinyin"></div>
+            <div id="popup-meaning" class="popup-meaning"></div>
+            <div id="popup-loading" class="popup-loading">Đang tra cứu...</div>
+        </div>
+    </div>
+
+    <!-- Core Logic File linking database -->
+    <script src="dictation_data.js"></script>
+    <script>
+        // State variables
+        let currentSheetName = "";
+        let currentUnitName = "";
+        let currentData = []; // Full raw data for selected sheet
+        let activePool = []; // Questions remaining in active unit
+        let totalQuestions = 0;
+        let history = []; // Questions served
+        let currentIndex = -1; // Pointer inside history
+        let exp = 0;
+        let combo = 0;
+        let maxCombo = 0;
+        let mistakes = 0;
+        
+        let isReviewing = false; // true if checked answer and waiting for Next
+        let activeMode = "typing"; // "typing" or "construction"
+        
+        let localProgress = {}; // Store completed units locally
+        let availableVoices = [];
+
+        // Synthesize Beep Sound Effects (Web Audio API)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep(type) {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(1000, audioCtx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.25);
+                } else if (type === 'wrong') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                }
+            } catch (e) {
+                console.warn("Audio Context beep error:", e);
+            }
+        }
+
+        // Initialize Application
+        window.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            loadProgress();
+            renderCourseList();
+            initSpeechVoices();
+            
+            // Set up hotkeys
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleActionClick();
+                } else if (e.key === 'Control') {
+                    e.preventDefault();
+                    playSpeech();
+                }
+            });
+
+            // Close lookup popup when clicking outside
+            document.addEventListener('click', (e) => {
+                const popup = document.getElementById('word-popup');
+                if (!popup.contains(e.target) && !e.target.closest('.zh-word')) {
+                    popup.style.display = 'none';
+                }
+            });
+        });
+
+        // Theme management
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const target = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('theme', target);
+        }
+
+        function loadTheme() {
+            const saved = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+        }
+
+        // Load & Save Progress
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('dictation_progress');
+                if (saved) {
+                    localProgress = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error("Error loading progress:", e);
+            }
+        }
+
+        function saveProgress(sheet, unit) {
+            if (!localProgress[sheet]) {
+                localProgress[sheet] = {};
+            }
+            localProgress[sheet][unit] = true;
+            localStorage.setItem('dictation_progress', JSON.stringify(localProgress));
+        }
+
+        // Speech voices setup
+        function initSpeechVoices() {
+            if (typeof window.speechSynthesis === 'undefined') return;
+            
+            function populateVoices() {
+                availableVoices = window.speechSynthesis.getVoices().filter(v => v.lang.includes('zh') || v.lang.includes('cmn'));
+                const select = document.getElementById('voice-select');
+                
+                // Clear and add placeholder
+                select.innerHTML = '<option value="">Chọn giọng đọc (Mặc định)</option>';
+                
+                availableVoices.forEach((voice, index) => {
+                    const opt = document.createElement('option');
+                    opt.value = index;
+                    
+                    let name = voice.name;
+                    if (name.includes('Google') || name.includes('Microsoft') || name.includes('Apple')) {
+                        name = name.replace(/(Google|Microsoft|Apple|Desktop|Natural)/gi, '').trim();
+                    }
+                    
+                    let label = name;
+                    if (name.toLowerCase().includes('female') || name.includes('Xiaoxiao') || name.includes('Ting-Ting') || name.includes('Ya-Ling')) {
+                        label = "Nữ - " + name;
+                    } else if (name.toLowerCase().includes('male') || name.includes('Kangkang') || name.includes('Yunyang') || name.includes('Yunjian')) {
+                        label = "Nam - " + name;
+                    }
+                    
+                    opt.textContent = label;
+                    select.appendChild(opt);
+                });
+
+                // Auto select Chinese voice if possible
+                const cmnIdx = availableVoices.findIndex(v => v.name.includes('Xiaoxiao') || v.name.includes('Meijia') || v.name.includes('Chinese'));
+                if (cmnIdx !== -1) {
+                    select.value = cmnIdx;
+                }
+            }
+            
+            populateVoices();
+            if (window.speechSynthesis.onvoiceschanged !== undefined) {
+                window.speechSynthesis.onvoiceschanged = populateVoices;
+            }
+        }
+
+        // Render Home Screen
+        function renderCourseList() {
+            const container = document.getElementById('course-list');
+            container.innerHTML = "";
+            
+            if (typeof window.DICTATION_DATA === 'undefined') {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--error)">Lỗi: Không tìm thấy tệp dữ liệu dictation_data.js. Hãy chắc chắn rằng bạn đã chạy convert_data.py!</p>';
+                return;
+            }
+
+            Object.keys(window.DICTATION_DATA).forEach(sheetName => {
+                const items = window.DICTATION_DATA[sheetName];
+                
+                // Calculate unit progress
+                const units = [...new Set(items.map(it => it.unit || "Bài khác"))];
+                let completedUnits = 0;
+                if (localProgress[sheetName]) {
+                    completedUnits = Object.keys(localProgress[sheetName]).length;
+                }
+
+                const btn = document.createElement('button');
+                btn.className = 'btn-course-select';
+                btn.onclick = () => showUnits(sheetName);
+                
+                btn.innerHTML = `
+                    <span class="course-title">${sheetName}</span>
+                    <span class="course-meta">${units.length} bài học · Hoàn thành: ${completedUnits}/${units.length}</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        // Navigate Screens
+        function showUnits(sheetName) {
+            currentSheetName = sheetName;
+            currentData = window.DICTATION_DATA[sheetName] || [];
+            
+            const container = document.getElementById('unit-list');
+            container.innerHTML = "";
+            
+            // Group by unit
+            const grouped = {};
+            currentData.forEach(item => {
+                const u = item.unit || "Chung";
+                if (!grouped[u]) grouped[u] = [];
+                grouped[u].push(item);
+            });
+
+            // Set Title
+            document.getElementById('unit-header-title').innerText = sheetName;
+            document.getElementById('unit-header-subtitle').innerText = `Chọn trong số ${Object.keys(grouped).length} bài học`;
+
+            // Sort units numerically if possible
+            const sortedUnits = Object.keys(grouped).sort((a, b) => {
+                return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+            });
+
+            sortedUnits.forEach(unitName => {
+                const items = grouped[unitName];
+                const isCompleted = localProgress[sheetName] && localProgress[sheetName][unitName];
+                
+                const btn = document.createElement('button');
+                btn.className = 'btn-unit-select';
+                btn.onclick = () => startUnit(unitName, items);
+                
+                btn.innerHTML = `
+                    <span class="unit-title">${unitName}</span>
+                    <span class="unit-meta">${items.length} câu học phản xạ</span>
+                    ${isCompleted ? '<span class="unit-completed-badge">✓ Đã hoàn thành</span>' : ''}
+                `;
+                container.appendChild(btn);
+            });
+
+            // Show Screen
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-units').classList.remove('hidden');
+            document.getElementById('btn-back-home').classList.remove('hidden');
+        }
+
+        // Navigate Back Control
+        function navigateBack() {
+            const screenUnits = document.getElementById('screen-units');
+            const screenPlay = document.getElementById('screen-play');
+            
+            if (!screenPlay.classList.contains('hidden')) {
+                // Exit play screen, return to units
+                document.getElementById('screen-play').classList.add('hidden');
+                showUnits(currentSheetName);
+            } else if (!screenUnits.classList.contains('hidden')) {
+                // Return to home
+                document.getElementById('screen-units').classList.add('hidden');
+                document.getElementById('btn-back-home').classList.add('hidden');
+                document.getElementById('screen-home').classList.remove('hidden');
+                renderCourseList(); // refresh progress counts
+            }
+        }
+
+        function goHome() {
+            document.getElementById('screen-victory').classList.add('hidden');
+            document.getElementById('screen-play').classList.add('hidden');
+            document.getElementById('screen-units').classList.add('hidden');
+            document.getElementById('btn-back-home').classList.add('hidden');
+            document.getElementById('screen-home').classList.remove('hidden');
+            renderCourseList();
+        }
+
+        // Start Learning Unit
+        function startUnit(unitName, items) {
+            currentUnitName = unitName;
+            activePool = [...items];
+            totalQuestions = activePool.length;
+            history = [];
+            currentIndex = -1;
+            
+            exp = 0;
+            combo = 0;
+            maxCombo = 0;
+            mistakes = 0;
+            isReviewing = false;
+
+            // Header labels
+            document.getElementById('play-level-badge').innerText = `${currentSheetName} - ${unitName}`;
+            
+            // Set first question
+            goNextQuestion();
+
+            // Toggle screens
+            document.getElementById('screen-units').classList.add('hidden');
+            document.getElementById('screen-play').classList.remove('hidden');
+            
+            // Focus typing input
+            if (activeMode === 'typing') {
+                setTimeout(() => document.getElementById('typing-input').focus(), 150);
+            }
+        }
+
+        // Set Next Question
+        function goNextQuestion() {
+            isReviewing = false;
+            document.getElementById('result-box').style.display = 'none';
+            document.getElementById('typing-input').value = "";
+            document.getElementById('typing-input').disabled = false;
+            
+            if (currentIndex >= history.length - 1) {
+                // Fetch next random from activePool
+                if (activePool.length === 0) {
+                    showVictoryScreen();
+                    return;
+                }
+                const randomIdx = Math.floor(Math.random() * activePool.length);
+                const nextQ = activePool[randomIdx];
+                history.push(nextQ);
+            }
+            
+            currentIndex++;
+            renderQuestion();
+        }
+
+        // Render current question display
+        function renderQuestion() {
+            const q = history[currentIndex];
+            
+            document.getElementById('prompt-text').innerText = q.vi;
+            document.getElementById('btn-action').innerText = "Kiểm tra (Enter)";
+            
+            updateStats();
+
+            if (activeMode === 'typing') {
+                document.getElementById('area-typing').classList.remove('hidden');
+                document.getElementById('area-construction').classList.add('hidden');
+                setTimeout(() => document.getElementById('typing-input').focus(), 50);
+            } else {
+                document.getElementById('area-typing').classList.add('hidden');
+                document.getElementById('area-construction').classList.remove('hidden');
+                setupConstructionMode(q);
+            }
+        }
+
+        // Set up block pool for construction mode
+        function setupConstructionMode(q) {
+            const target = document.getElementById('construction-target');
+            const pool = document.getElementById('construction-pool');
+            
+            target.innerHTML = '';
+            pool.innerHTML = '';
+            
+            const isMeaningful = char => /[\u4e00-\u9fff\u3400-\u4dbf\p{L}\p{N}]/u.test(char);
+            let segments = [];
+            
+            if (q.zh.includes('|')) {
+                segments = q.zh.split('|').filter(s => s.trim() !== '' && isMeaningful(s));
+            } else if ('Segmenter' in Intl) {
+                const segmenter = new Intl.Segmenter('zh', { granularity: 'word' });
+                segments = [...segmenter.segment(q.zh)]
+                    .map(s => s.segment)
+                    .filter(s => s.trim() !== '' && isMeaningful(s));
+            } else {
+                segments = q.zh.split('').filter(s => s.trim() !== '' && isMeaningful(s));
+            }
+
+            // Shuffle blocks
+            const shuffled = [...segments];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+
+            // Create buttons
+            shuffled.forEach((text) => {
+                const btn = document.createElement('div');
+                btn.className = 'word-block';
+                btn.innerText = text;
+                
+                btn.onclick = () => {
+                    if (isReviewing) return;
+                    if (btn.parentNode === pool) {
+                        btn.classList.add('in-target');
+                        target.appendChild(btn);
+                    } else {
+                        btn.classList.remove('in-target');
+                        pool.appendChild(btn);
+                    }
+                };
+                
+                pool.appendChild(btn);
+            });
+        }
+
+        // Toggle study mode (typing vs. construction blocks)
+        function toggleMode(val) {
+            activeMode = val;
+            if (!isReviewing && currentIndex >= 0) {
+                renderQuestion();
+            } else if (isReviewing) {
+                if (activeMode === 'typing') {
+                    document.getElementById('area-typing').classList.remove('hidden');
+                    document.getElementById('area-construction').classList.add('hidden');
+                } else {
+                    document.getElementById('area-typing').classList.add('hidden');
+                    document.getElementById('area-construction').classList.remove('hidden');
+                }
+            }
+        }
+
+        // Update stats widgets
+        function updateStats() {
+            document.getElementById('lbl-exp').innerText = exp;
+            document.getElementById('lbl-combo').innerText = combo;
+            
+            const remaining = activePool.length;
+            document.getElementById('lbl-remaining').innerText = remaining;
+            
+            const progressPct = ((totalQuestions - remaining) / totalQuestions) * 100;
+            document.getElementById('progress-bar-fill').style.width = `${progressPct}%`;
+        }
+
+        // Normalize text to match successfully
+        function normalize(str) {
+            if (!str) return "";
+            // Replace Chinese punctuation and format lowercase
+            return str.trim()
+                .toLowerCase()
+                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()？?。，、！!;:"']/g, "")
+                .replace(/\s+/g, "");
+        }
+
+        // Main Check Answer Action
+        function handleActionClick() {
+            if (isReviewing) {
+                goNextQuestion();
+            } else {
+                checkAnswer();
+            }
+        }
+
+        // Check Answer correctness
+        function checkAnswer() {
+            const q = history[currentIndex];
+            let user = "";
+
+            if (activeMode === 'typing') {
+                user = document.getElementById('typing-input').value.trim();
+                document.getElementById('typing-input').disabled = true;
+            } else {
+                const targetBlocks = document.getElementById('construction-target').querySelectorAll('.word-block');
+                targetBlocks.forEach(b => {
+                    user += b.innerText.trim();
+                });
+            }
+
+            const cleanUser = normalize(user);
+            const cleanZh = normalize(q.zh);
+            const cleanPinyin = q.pinyin ? normalize(q.pinyin) : "";
+
+            let isCorrect = (cleanUser === cleanZh);
+            if (!isCorrect && cleanPinyin && cleanUser === cleanPinyin) {
+                isCorrect = true;
+            }
+
+            const resultBox = document.getElementById('result-box');
+            const statusEl = document.getElementById('result-status');
+            const chSentenceEl = document.getElementById('result-chinese');
+            const pySentenceEl = document.getElementById('result-pinyin');
+
+            // Format segments with HTML for click-lookup
+            const segmentedHtml = segmentChineseSentence(q.zh, q.viPlus);
+            chSentenceEl.innerHTML = segmentedHtml;
+            
+            let displayPinyin = q.pinyin || "";
+            if ((!displayPinyin || displayPinyin === "...") && window.pinyinPro && window.pinyinPro.pinyin) {
+                try {
+                    displayPinyin = window.pinyinPro.pinyin(q.zh.replace(/\|/g, ''), { toneType: 'symbol', type: 'string' });
+                } catch(e) {
+                    displayPinyin = "";
+                }
+            }
+            pySentenceEl.innerText = displayPinyin;
+
+            resultBox.style.display = 'block';
+
+            if (isCorrect) {
+                playBeep('correct');
+                statusEl.innerText = "Chính xác! ✓";
+                statusEl.style.color = "var(--success)";
+                resultBox.style.background = "var(--success-bg)";
+                resultBox.style.border = "1px solid var(--success-border)";
+                resultBox.style.color = "var(--success-text)";
+                
+                exp += 10;
+                combo++;
+                if (combo > maxCombo) maxCombo = combo;
+                
+                // Remove from active learning pool
+                activePool = activePool.filter(it => it.zh !== q.zh);
+            } else {
+                playBeep('wrong');
+                statusEl.innerText = "Chưa chính xác!";
+                statusEl.style.color = "var(--error)";
+                resultBox.style.background = "var(--error-bg)";
+                resultBox.style.border = "1px solid var(--error-border)";
+                resultBox.style.color = "var(--error-text)";
+                
+                combo = 0;
+                mistakes++;
+                
+                // Highlight input field red on typing mode
+                if (activeMode === 'typing') {
+                    const inputEl = document.getElementById('typing-input');
+                    inputEl.classList.add('shake');
+                    setTimeout(() => inputEl.classList.remove('shake'), 400);
+                }
+            }
+
+            isReviewing = true;
+            document.getElementById('btn-action').innerText = "Tiếp theo (Enter)";
+            updateStats();
+            
+            // Auto play voice audio
+            playSpeech();
+        }
+
+        // TTS Reader
+        function playSpeech() {
+            if (currentIndex < 0) return;
+            const text = history[currentIndex].zh.replace(/\|/g, ''); // strip delimiters
+            
+            if (typeof window.speechSynthesis === 'undefined') return;
+            
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-CN';
+            
+            // Speed options
+            const speed = parseFloat(document.getElementById('audio-speed').value) || 1.0;
+            utterance.rate = speed;
+
+            // Voice selection
+            const voiceIdx = document.getElementById('voice-select').value;
+            if (voiceIdx !== "" && availableVoices[voiceIdx]) {
+                utterance.voice = availableVoices[voiceIdx];
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Word segmenter for popup lookup UI
+        function segmentChineseSentence(text, viPlus) {
+            if (!text) return "";
+            
+            // Check mapping
+            let meaningMap = {};
+            if (viPlus && text.includes('|') && viPlus.includes('|')) {
+                const zhSegs = text.split('|');
+                const viSegs = viPlus.split('|');
+                zhSegs.forEach((seg, i) => {
+                    if (viSegs[i] !== undefined) {
+                        meaningMap[seg.trim()] = viSegs[i].trim();
+                    }
+                });
+            }
+
+            let html = "";
+            const isChinese = char => /[\u4e00-\u9fff\u3400-\u4dbf]/u.test(char);
+
+            if (text.includes('|')) {
+                const segments = text.split('|');
+                segments.forEach(seg => {
+                    if (!seg) return;
+                    if (isChinese(seg)) {
+                        const meaning = meaningMap[seg.trim()] || "";
+                        html += `<span class="zh-word" data-word="${seg.trim()}" data-meaning="${meaning}">${seg}</span>`;
+                    } else {
+                        html += seg;
+                    }
+                });
+            } else if ('Segmenter' in Intl) {
+                const segmenter = new Intl.Segmenter('zh', { granularity: 'word' });
+                const segments = [...segmenter.segment(text)];
+                segments.forEach(seg => {
+                    const s = seg.segment;
+                    if (seg.isWordLike && isChinese(s)) {
+                        html += `<span class="zh-word" data-word="${s}">${s}</span>`;
+                    } else {
+                        html += s;
+                    }
+                });
+            } else {
+                // Fallback character by character
+                for (let i = 0; i < text.length; i++) {
+                    const char = text[i];
+                    if (isChinese(char)) {
+                        html += `<span class="zh-word" data-word="${char}">${char}</span>`;
+                    } else {
+                        html += char;
+                    }
+                }
+            }
+
+            // Wrap in event listener attaching function
+            setTimeout(attachWordClicks, 50);
+
+            return html;
+        }
+
+        // Attach click actions to characters
+        function attachWordClicks() {
+            const words = document.querySelectorAll('.zh-word');
+            words.forEach(w => {
+                w.onclick = (e) => {
+                    e.stopPropagation();
+                    showWordPopup(w.getAttribute('data-word'), w.getAttribute('data-meaning') || "", w);
+                };
+            });
+        }
+
+        // Floating Modal/Tooltip for lookup
+        let currentPopupWord = "";
+        function showWordPopup(word, presetMeaning, anchorEl) {
+            currentPopupWord = word;
+            
+            const popup = document.getElementById('word-popup');
+            const hanziEl = document.getElementById('popup-hanzi');
+            const pinyinEl = document.getElementById('popup-pinyin');
+            const meaningEl = document.getElementById('popup-meaning');
+            const loadingEl = document.getElementById('popup-loading');
+
+            hanziEl.innerText = word;
+            pinyinEl.innerText = "";
+            meaningEl.innerText = "";
+            loadingEl.style.display = "block";
+
+            // Resolve client side pinyin
+            try {
+                if (window.pinyinPro && window.pinyinPro.pinyin) {
+                    pinyinEl.innerText = window.pinyinPro.pinyin(word, { toneType: 'symbol', type: 'string' });
+                }
+            } catch (e) {
+                console.warn(e);
+            }
+
+            popup.style.display = "block";
+            
+            // Position popup
+            const rect = anchorEl.getBoundingClientRect();
+            const containerRect = document.querySelector('.app-container').getBoundingClientRect();
+            
+            // Adjust relative to absolute container
+            const top = rect.top - containerRect.top;
+            const left = rect.left - containerRect.left + (rect.width / 2);
+            
+            popup.style.top = `${top}px`;
+            popup.style.left = `${left}px`;
+
+            if (presetMeaning) {
+                loadingEl.style.display = "none";
+                meaningEl.innerText = presetMeaning;
+                return;
+            }
+
+            // Fallback Online Translation (Google Translate api fallback)
+            const queryUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh-CN&tl=vi&dt=t&q=${encodeURIComponent(word)}`;
+            fetch(queryUrl)
+                .then(res => res.json())
+                .then(data => {
+                    loadingEl.style.display = "none";
+                    if (data && data[0] && data[0][0]) {
+                        meaningEl.innerText = data[0][0][0];
+                    } else {
+                        meaningEl.innerText = "(Không tìm thấy nghĩa)";
+                    }
+                })
+                .catch(err => {
+                    loadingEl.style.display = "none";
+                    meaningEl.innerText = "(Lỗi dịch: offline)";
+                });
+        }
+
+        // TTS for lookup popup word
+        function speakPopupWord() {
+            if (!currentPopupWord) return;
+            if (typeof window.speechSynthesis === 'undefined') return;
+            
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(currentPopupWord);
+            utterance.lang = 'zh-CN';
+            
+            const voiceIdx = document.getElementById('voice-select').value;
+            if (voiceIdx !== "" && availableVoices[voiceIdx]) {
+                utterance.voice = availableVoices[voiceIdx];
+            }
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Show Victory Screen
+        function showVictoryScreen() {
+            saveProgress(currentSheetName, currentUnitName);
+            
+            document.getElementById('screen-play').classList.add('hidden');
+            document.getElementById('screen-victory').classList.remove('hidden');
+            
+            document.getElementById('victory-exp').innerText = exp;
+            document.getElementById('victory-combo').innerText = maxCombo;
+
+            // Set a random quote
+            const quotes = [
+                { zh: "学而不思则罔，思而不学则殆。", vi: "Học mà không suy nghĩ thì vô ích, suy nghĩ mà không học thì hiểm nghèo." },
+                { zh: "千里之行，始于足下。", vi: "Hành trình ngàn dặm bắt đầu từ một bước chân." },
+                { zh: "锲而不舍，金石可镂。", vi: "Kiên trì không ngừng, sắt đá cũng mài mòn." },
+                { zh: "温故而知新，可以为师矣。", vi: "Ôn lại chuyện cũ để biết thêm chuyện mới, có thể làm thầy được rồi." }
+            ];
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('quote-zh').innerText = randomQuote.zh;
+            document.getElementById('quote-vi').innerText = randomQuote.vi;
+
+            // Trigger Confetti explosion
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
