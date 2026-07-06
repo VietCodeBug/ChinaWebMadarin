@@ -24,7 +24,6 @@ export const auth = betterAuth({
             },
             maxCombo: {
                 type: "number",
-                fieldName: "max_combo",
                 defaultValue: 0
             },
             streak: {
@@ -32,8 +31,7 @@ export const auth = betterAuth({
                 defaultValue: 1
             },
             lastActive: {
-                type: "date",
-                fieldName: "last_active"
+                type: "date"
             }
         }
     }

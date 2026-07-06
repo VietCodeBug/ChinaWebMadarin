@@ -69,7 +69,13 @@ export default function ReadingTab({ speak, showToast, onVocabSaved }: Props) {
       setLoading(false);
     });
 
-    const dismiss = () => setPopup(null);
+    const dismiss = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.zh-word') || target.closest('.word-popup')) {
+        return;
+      }
+      setPopup(null);
+    };
     document.addEventListener('click', dismiss);
     return () => document.removeEventListener('click', dismiss);
   }, []);
