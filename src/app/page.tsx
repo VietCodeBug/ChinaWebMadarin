@@ -383,38 +383,58 @@ export default function App() {
 
   // ─── Auth screen ─────────────────────────────────────────────────────────
   if (!user) return (
-    <div className="flex min-h-screen items-center justify-center p-4" style={{ background: 'var(--bg-app)' }}>
+    <div 
+      className="flex min-h-screen items-center justify-center p-4 relative bg-cover bg-center" 
+      style={{ backgroundImage: `linear-gradient(to bottom, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.92)), url('/login_bg.png')` }}
+    >
       {/* Theme picker on auth */}
-      <div className="absolute top-4 right-4 flex gap-2">
+      <div className="absolute top-6 right-6 flex gap-2.5 z-10 bg-slate-900/40 backdrop-blur-md p-2 rounded-full border border-white/10">
         {THEMES.map(t => (
-          <div key={t} className={`theme-dot ${theme === t ? 'active' : ''}`}
-            style={{ background: THEME_COLORS[t] }} onClick={() => applyTheme(t)} />
+          <div 
+            key={t} 
+            className={`theme-dot cursor-pointer transition-all hover:scale-110 ${theme === t ? 'active ring-2 ring-primary ring-offset-2 ring-offset-slate-900' : ''}`}
+            style={{ background: THEME_COLORS[t], width: 18, height: 18 }} 
+            onClick={() => applyTheme(t)} 
+          />
         ))}
       </div>
 
-      <div className="jade-card p-8 w-full max-w-sm flex flex-col items-center gap-8 bg-white dark:bg-slate-900 border dark:border-slate-800">
-        <div className="text-center">
-          <div style={{ fontSize: '3.5rem', fontWeight: 900, color: 'var(--primary)', fontFamily: "'Noto Sans SC'" }}>学</div>
-          <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)' }}>Scholar</div>
-          <p style={{ fontSize: '.85rem', color: 'var(--text-muted)', marginTop: '.45rem' }}>
-            Đăng nhập bằng Google để học tiếng Trung miễn phí
-          </p>
+      <div className="backdrop-blur-xl bg-white/10 dark:bg-slate-900/60 border border-white/10 dark:border-slate-800/40 shadow-2xl rounded-[32px] p-8 sm:p-10 w-full max-w-sm flex flex-col items-center gap-8 text-center">
+        <div className="flex flex-col items-center gap-4">
+          {/* Logo container with animated rings */}
+          <div className="relative w-20 h-20 flex items-center justify-center rounded-full bg-primary/10 border border-primary/20 shadow-lg shadow-primary/5">
+            <div className="absolute inset-0.5 rounded-full border border-dashed border-primary/45 animate-spin-slow"></div>
+            <div className="text-4xl font-black text-primary zh select-none" style={{ fontFamily: "'Noto Sans SC'" }}>学</div>
+          </div>
+          
+          <div>
+            <h1 className="text-3xl font-black tracking-tight text-white mt-2">
+              <span className="bg-gradient-to-r from-emerald-400 to-primary bg-clip-text text-transparent">Scholar</span>
+            </h1>
+            <p className="text-xs text-slate-300 font-semibold mt-2.5 max-w-[280px] mx-auto leading-relaxed">
+              Học tiếng Trung thông minh bằng thuật toán lặp lại ngắt quãng (Spaced Repetition)
+            </p>
+          </div>
         </div>
         
         <button 
           onClick={handleGoogleLogin} 
-          className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-2xl border border-slate-200 dark:border-slate-800 font-extrabold text-sm hover:bg-slate-50 dark:hover:bg-slate-850/60 transition-colors bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-200 shadow-sm"
+          className="w-full flex items-center justify-center gap-3 py-3.5 px-5 rounded-2xl font-bold text-sm bg-primary text-white hover:brightness-105 active:scale-95 transition-all shadow-lg shadow-primary/25 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={authBusy}
         >
           {authBusy ? (
-            <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
-            <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
-              <path fill="#ea4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114-3.41 0-6.19-2.78-6.19-6.19s2.78-6.19 6.19-6.19c1.7 0 3.227.69 4.33 1.794l3.197-3.193C19.24 1.94 15.94 1 12.24 1 6.05 1 1 6.05 1 12.24s4.95 11.24 11.24 11.24c5.73 0 10.51-4.11 10.51-11.24 0-.77-.07-1.42-.2-1.95H12.24z"/>
+            <svg className="w-5 h-5 flex-shrink-0 fill-current" viewBox="0 0 24 24">
+              <path d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114-3.41 0-6.19-2.78-6.19-6.19s2.78-6.19 6.19-6.19c1.7 0 3.227.69 4.33 1.794l3.197-3.193C19.24 1.94 15.94 1 12.24 1 6.05 1 1 6.05 1 12.24s4.95 11.24 11.24 11.24c5.73 0 10.51-4.11 10.51-11.24 0-.77-.07-1.42-.2-1.95H12.24z"/>
             </svg>
           )}
           <span>Đăng nhập với Google</span>
         </button>
+
+        <div className="text-[10px] text-slate-500 font-bold tracking-wider uppercase border-t border-white/5 w-full pt-4">
+          Bản quyền thuộc về Scholar © 2026
+        </div>
       </div>
     </div>
   );
