@@ -7,6 +7,9 @@ export const auth = betterAuth({
     database: drizzleAdapter(db, {
         provider: "pg",
     }),
+    baseURL: process.env.NODE_ENV === 'development' 
+        ? "http://localhost:3000" 
+        : (process.env.BETTER_AUTH_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")),
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID!,
