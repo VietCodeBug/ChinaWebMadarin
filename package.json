@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^0.9.3",
+    "@neondatabase/serverless": "^0.10.0",
     "better-auth": "^1.6.23",
     "canvas-confetti": "^1.9.3",
     "drizzle-orm": "^0.45.2",
