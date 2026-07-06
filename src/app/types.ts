@@ -1,11 +1,12 @@
 // Shared Types for Scholar App
 export interface User {
-  id: number;
+  id: string; // Updated to string for Better Auth
   email: string;
   display_name: string | null;
   exp: number;
   max_combo: number;
   streak: number;
+  image?: string | null;
 }
 
 export interface Course  { name: string; total: number; completed: number; }
@@ -20,6 +21,16 @@ export interface HSKWord {
   isAdded: boolean; level: string;
 }
 export interface DayActivity { label: string; value: number; date: string; }
+export interface DeckProgress {
+  id: number;
+  level: string;
+  deckIndex: number;
+  knownIds: number[];
+  unknownIds: number[];
+  isFinished: boolean;
+  updatedAt: string;
+}
+
 
 export const THEMES = ['jade', 'dark', 'ocean', 'sunset'] as const;
 export type Theme = typeof THEMES[number];

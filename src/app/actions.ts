@@ -51,7 +51,7 @@ export async function getCourseList() {
       SELECT q.sheet_name, COUNT(up.id) as completed_count 
       FROM user_progress up
       JOIN questions q ON up.question_id = q.id
-      WHERE up.user_id = $1
+      WHERE up.user_id = $1::varchar
       GROUP BY q.sheet_name
     `, [user.id]);
 
@@ -72,7 +72,7 @@ export async function getCourseList() {
     const srsDueRes = await query(`
       SELECT COUNT(*) as due_count 
       FROM user_flashcards 
-      WHERE user_id = $1 AND next_review <= NOW()
+      WHERE user_id = $1::varchar AND next_review <= NOW()
     `, [user.id]);
     const srsDueCount = parseInt(srsDueRes.rows[0]?.due_count || '0', 10);
 
@@ -80,7 +80,7 @@ export async function getCourseList() {
     const vocabRes = await query(`
       SELECT COUNT(*) as vocab_count 
       FROM user_vocab 
-      WHERE user_id = $1
+      WHERE user_id = $1::varchar
     `, [user.id]);
     const vocabCount = parseInt(vocabRes.rows[0]?.vocab_count || '0', 10);
 
@@ -118,7 +118,7 @@ export async function getUnitList(sheetName: string) {
       SELECT q.unit_name, COUNT(up.id) as completed_count 
       FROM user_progress up
       JOIN questions q ON up.question_id = q.id
-      WHERE up.user_id = $1 AND q.sheet_name = $2
+      WHERE up.user_id = $1::varchar AND q.sheet_name = $2
       GROUP BY q.unit_name
     `, [user.id, sheetName]);
 
@@ -156,7 +156,7 @@ export async function getUnitQuestions(sheetName: string, unitName: string) {
     const progressRes = await query(`
       SELECT question_id 
       FROM user_progress 
-      WHERE user_id = $1
+      WHERE user_id = $1::varchar
     `, [user.id]);
     
     const completedIds = new Set(progressRes.rows.map(r => r.question_id));
@@ -175,7 +175,7 @@ export async function saveQuestionCompletion(questionId: number) {
   try {
     await query(`
       INSERT INTO user_progress (user_id, question_id) 
-      VALUES ($1, $2)
+      VALUES ($1::varchar, $2)
       ON CONFLICT (user_id, question_id) DO NOTHING
     `, [user.id, questionId]);
 
@@ -191,10 +191,10 @@ export async function saveLessonScore(expGained: number, maxCombo: number) {
 
   try {
     await query(`
-      UPDATE users 
+      UPDATE "user"
       SET exp = exp + $1,
           max_combo = GREATEST(max_combo, $2)
-      WHERE id = $3
+      WHERE id = $3::varchar
     `, [expGained, maxCombo, user.id]);
 
     return { success: true };
@@ -204,17 +204,17 @@ export async function saveLessonScore(expGained: number, maxCombo: number) {
 }
 
 // Personal Vocab (Từ vựng cá nhân) Actions
-export async function saveToVocab(word: string, pinyin: string, meaning: string) {
+export async function saveToVocab(word: string, pinyin: string, meaning: string, folderId?: number) {
   const user = await getCurrentUser();
   if (!user) return { success: false, error: "Unauthorized" };
 
   try {
     await query(`
-      INSERT INTO user_vocab (user_id, word, pinyin, meaning)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO user_vocab (user_id, word, pinyin, meaning, folder_id)
+      VALUES ($1, $2, $3, $4, $5)
       ON CONFLICT (user_id, word) DO UPDATE
-      SET pinyin = EXCLUDED.pinyin, meaning = EXCLUDED.meaning
-    `, [user.id, word.trim(), pinyin.trim(), meaning.trim()]);
+      SET pinyin = EXCLUDED.pinyin, meaning = EXCLUDED.meaning, folder_id = EXCLUDED.folder_id
+    `, [user.id, word.trim(), pinyin.trim(), meaning.trim(), folderId || null]);
     
     return { success: true };
   } catch (e: any) {
@@ -222,17 +222,26 @@ export async function saveToVocab(word: string, pinyin: string, meaning: string)
   }
 }
 
-export async function getVocabList() {
+export async function getVocabList(folderId?: number) {
   const user = await getCurrentUser();
   if (!user) return { success: false, error: "Unauthorized" };
 
   try {
-    const res = await query(`
-      SELECT id, word, pinyin, meaning, status, created_at as "createdAt"
+    let q = `
+      SELECT id, word, pinyin, meaning, status, folder_id as "folderId", created_at as "createdAt"
       FROM user_vocab
-      WHERE user_id = $1
-      ORDER BY created_at DESC
-    `, [user.id]);
+      WHERE user_id = $1::varchar
+    `;
+    const params: any[] = [user.id];
+    
+    if (folderId !== undefined && folderId !== null) {
+      q += ` AND folder_id = $2`;
+      params.push(folderId);
+    }
+    
+    q += ` ORDER BY created_at DESC`;
+    
+    const res = await query(q, params);
     return { success: true, vocab: res.rows };
   } catch (e: any) {
     return { success: false, error: e.message };
@@ -245,7 +254,7 @@ export async function deleteFromVocab(vocabId: number) {
 
   try {
     await query(`
-      DELETE FROM user_vocab WHERE id = $1 AND user_id = $2
+      DELETE FROM user_vocab WHERE id = $1 AND user_id = $2::varchar
     `, [vocabId, user.id]);
     return { success: true };
   } catch (e: any) {
@@ -254,32 +263,41 @@ export async function deleteFromVocab(vocabId: number) {
 }
 
 // Spaced Repetition (SRS) Flashcards Actions
-export async function addFlashcard(zh: string, vi: string, pinyin: string) {
+export async function addFlashcard(zh: string, vi: string, pinyin: string, folderId?: number) {
   const user = await getCurrentUser();
   if (!user) return { success: false, error: "Unauthorized" };
 
   try {
     await query(`
-      INSERT INTO user_flashcards (user_id, zh, vi, pinyin)
-      VALUES ($1, $2, $3, $4)
-    `, [user.id, zh.trim(), vi.trim(), pinyin.trim()]);
+      INSERT INTO user_flashcards (user_id, zh, vi, pinyin, folder_id)
+      VALUES ($1::varchar, $2, $3, $4, $5)
+    `, [user.id, zh.trim(), vi.trim(), pinyin.trim(), folderId || null]);
     return { success: true };
   } catch (e: any) {
     return { success: false, error: e.message };
   }
 }
 
-export async function getFlashcardsDue() {
+export async function getFlashcardsDue(folderId?: number) {
   const user = await getCurrentUser();
   if (!user) return { success: false, error: "Unauthorized" };
 
   try {
-    const res = await query(`
-      SELECT id, zh, vi, pinyin, interval_days as "intervalDays", ease_factor as "easeFactor", next_review as "nextReview"
+    let q = `
+      SELECT id, zh, vi, pinyin, interval_days as "intervalDays", ease_factor as "easeFactor", next_review as "nextReview", folder_id as "folderId"
       FROM user_flashcards
-      WHERE user_id = $1 AND next_review <= NOW()
-      ORDER BY next_review ASC
-    `, [user.id]);
+      WHERE user_id = $1::varchar AND next_review <= NOW()
+    `;
+    const params: any[] = [user.id];
+    
+    if (folderId !== undefined && folderId !== null) {
+      q += ` AND folder_id = $2`;
+      params.push(folderId);
+    }
+    
+    q += ` ORDER BY next_review ASC`;
+    
+    const res = await query(q, params);
     return { success: true, cards: res.rows };
   } catch (e: any) {
     return { success: false, error: e.message };
@@ -294,7 +312,7 @@ export async function recordFlashcardReview(cardId: number, score: number) {
     // 1. Fetch current card parameters
     const res = await query(`
       SELECT id, interval_days, ease_factor FROM user_flashcards
-      WHERE id = $1 AND user_id = $2
+      WHERE id = $1 AND user_id = $2::varchar
     `, [cardId, user.id]);
     
     if (res.rows.length === 0) return { success: false, error: "Card not found" };
@@ -320,7 +338,7 @@ export async function recordFlashcardReview(cardId: number, score: number) {
       SET interval_days = $1,
           ease_factor = $2,
           next_review = NOW() + INTERVAL '1 day' * $1
-      WHERE id = $3 AND user_id = $4
+      WHERE id = $3 AND user_id = $4::varchar
     `, [interval, ease, cardId, user.id]);
     
     return { success: true };
@@ -376,7 +394,7 @@ export async function getHSK30Stats() {
     }
 
     const addedRes = await query(`
-      SELECT COUNT(DISTINCT zh) as cnt FROM user_flashcards WHERE user_id = $1
+      SELECT COUNT(DISTINCT zh) as cnt FROM user_flashcards WHERE user_id = $1::varchar
     `, [user.id]);
     const addedCount = parseInt(addedRes.rows[0]?.cnt || '0', 10);
 
@@ -404,7 +422,7 @@ export async function getHSK30DeckWords(level: string, deckIndex: number) {
     `, [level, limit, offset]);
 
     const addedRes = await query(`
-      SELECT DISTINCT zh FROM user_flashcards WHERE user_id = $1
+      SELECT DISTINCT zh FROM user_flashcards WHERE user_id = $1::varchar
     `, [user.id]);
     const addedWords = new Set(addedRes.rows.map(r => r.zh.trim()));
 
@@ -419,7 +437,7 @@ export async function getHSK30DeckWords(level: string, deckIndex: number) {
   }
 }
 
-export async function addHSK30WordToFlashcards(wordId: number) {
+export async function addHSK30WordToFlashcards(wordId: number, folderId?: number) {
   const user = await getCurrentUser();
   if (!user) return { success: false, error: "Unauthorized" };
 
@@ -432,10 +450,10 @@ export async function addHSK30WordToFlashcards(wordId: number) {
 
     // Ignore duplicate
     await query(`
-      INSERT INTO user_flashcards (user_id, zh, vi, pinyin)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO user_flashcards (user_id, zh, vi, pinyin, folder_id)
+      VALUES ($1::varchar, $2, $3, $4, $5)
       ON CONFLICT DO NOTHING
-    `, [user.id, word.word.trim(), word.meaning.trim(), word.pinyin.trim()]);
+    `, [user.id, word.word.trim(), word.meaning.trim(), word.pinyin.trim(), folderId || null]);
 
     return { success: true };
   } catch (e: any) {
@@ -455,7 +473,7 @@ export async function getDailyActivity() {
         DATE(completed_at) as day,
         COUNT(*) as questions_done
       FROM user_progress
-      WHERE user_id = $1
+      WHERE user_id = $1::varchar
         AND completed_at >= NOW() - INTERVAL '7 days'
       GROUP BY DATE(completed_at)
       ORDER BY day ASC
@@ -485,4 +503,119 @@ export async function getDailyActivity() {
     return { success: false, error: e.message };
   }
 }
+
+// User Deck Study Progress Actions (for continue learning & Quizlet mode)
+export async function saveDeckProgress(level: string, deckIndex: number, knownIds: number[], unknownIds: number[], isFinished: boolean) {
+  const user = await getCurrentUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  try {
+    await query(`
+      INSERT INTO user_deck_progress (user_id, level, deck_index, known_ids, unknown_ids, is_finished, updated_at)
+      VALUES ($1::varchar, $2::varchar, $3, $4::integer[], $5::integer[], $6, NOW())
+      ON CONFLICT (user_id, level, deck_index) DO UPDATE
+      SET known_ids = EXCLUDED.known_ids,
+          unknown_ids = EXCLUDED.unknown_ids,
+          is_finished = EXCLUDED.is_finished,
+          updated_at = NOW()
+    `, [user.id, level, deckIndex, knownIds, unknownIds, isFinished]);
+    
+    // Only revalidate dashboard path when the deck is completed, to save network bandwidth and server CPU!
+    if (isFinished) {
+      revalidatePath('/');
+    }
+    return { success: true };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function getInProgressDecks() {
+  const user = await getCurrentUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  try {
+    const res = await query(`
+      SELECT id, level, deck_index as "deckIndex", known_ids as "knownIds", unknown_ids as "unknownIds", is_finished as "isFinished", updated_at as "updatedAt"
+      FROM user_deck_progress
+      WHERE user_id = $1::varchar AND is_finished = false
+      ORDER BY updated_at DESC
+    `, [user.id]);
+    return { success: true, decks: res.rows };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function getDeckProgress(level: string, deckIndex: number) {
+  const user = await getCurrentUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  try {
+    const res = await query(`
+      SELECT level, deck_index as "deckIndex", known_ids as "knownIds", unknown_ids as "unknownIds", is_finished as "isFinished"
+      FROM user_deck_progress
+      WHERE user_id = $1::varchar AND level = $2 AND deck_index = $3
+    `, [user.id, level, deckIndex]);
+    
+    if (res.rows.length > 0) {
+      return { success: true, progress: res.rows[0] };
+    }
+    return { success: true, progress: null };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+// Folder/Topic Management actions
+export async function createFolder(name: string) {
+  const user = await getCurrentUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  try {
+    const res = await query(`
+      INSERT INTO user_folders (user_id, name)
+      VALUES ($1::varchar, $2::varchar)
+      RETURNING id, name
+    `, [user.id, name.trim()]);
+    return { success: true, folder: res.rows[0] };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function getFolders() {
+  const user = await getCurrentUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  try {
+    const res = await query(`
+      SELECT id, name, created_at as "createdAt"
+      FROM user_folders
+      WHERE user_id = $1::varchar
+      ORDER BY name ASC
+    `, [user.id]);
+    return { success: true, folders: res.rows };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function deleteFolder(folderId: number) {
+  const user = await getCurrentUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  try {
+    await query(`
+      DELETE FROM user_folders
+      WHERE id = $1 AND user_id = $2::varchar
+    `, [folderId, user.id]);
+    return { success: true };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+
+
 

@@ -44,6 +44,7 @@ export default function PracticeTab({
   const [maxCombo, setMaxCombo] = useState(0);
   const [mistakes, setMistakes] = useState(0);
   const [doneCount, setDoneCount] = useState(0);
+  const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const isChinese = (c: string) => /[\u4e00-\u9fff]/u.test(c);
@@ -112,7 +113,7 @@ export default function PracticeTab({
     if (curIdx < 0) return;
     const q = history[curIdx];
     const ua = (practiceMode === 'typing' ? answer : selBlocks.join('')).trim();
-    const clean = (s: string) => s.toLowerCase().replace(/[.，。！？!?,;:'"]/g, '').replace(/\s+/g, '');
+    const clean = (s: string) => s.toLowerCase().replace(/[.，。！？!?,;:'"|]/g, '').replace(/\s+/g, '');
     const ok = !!(clean(ua) === clean(q.zh) || (q.pinyin && q.pinyin !== '...' && clean(ua) === clean(q.pinyin)));
     setIsCorrect(ok); setShowResult(true); setReviewing(true);
     setResultChinese(segmentResult(q));
@@ -133,12 +134,15 @@ export default function PracticeTab({
   };
 
   const openCourse = async (name: string) => {
+    setLoading(true);
     setSelCourse(name); setSelUnit('');
     const r = await getUnitList(name);
     if (r.success && r.units) setUnits(r.units);
+    setLoading(false);
   };
 
   const startUnit = async (unit: string) => {
+    setLoading(true);
     setSelUnit(unit);
     const r = await getUnitQuestions(selCourse, unit);
     if (r.success && r.questions) {
@@ -148,9 +152,16 @@ export default function PracticeTab({
       setPool(p.length ? p : [...r.questions]);
       setHistory([]); setCurIdx(-1); setDoneCount(r.questions.length - p.length);
       setExp(0); setCombo(0); setMaxCombo(0); setMistakes(0);
-      setReviewing(false); setShowResult(false); setAnswer('');
     }
+    setLoading(false);
   };
+
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center py-24 gap-3 text-primary">
+      <div className="spinner" />
+      <span className="font-extrabold text-sm">Đang tải nội dung...</span>
+    </div>
+  );
 
   // ─── Course selection ───────────────────────────────────────────────────
   if (selCourse === '') return (

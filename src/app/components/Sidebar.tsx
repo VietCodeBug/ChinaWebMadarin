@@ -68,12 +68,16 @@ export default function Sidebar({ user, tab, setTab, theme, applyTheme, onLogout
       {/* Profile card */}
       <div className="px-2 py-3 rounded-xl flex flex-col gap-2.5" style={{ background: 'var(--primary-light)' }}>
         <div className="flex items-center gap-2">
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
-            style={{ background: 'var(--primary)', color: 'var(--on-primary-text)' }}
-          >
-            {(user.display_name || user.email).charAt(0).toUpperCase()}
-          </div>
+          {user.image ? (
+            <img src={user.image} alt={user.display_name || ''} className="w-9 h-9 rounded-full flex-shrink-0 object-cover border border-primary/20" />
+          ) : (
+            <div
+              className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
+              style={{ background: 'var(--primary)', color: 'var(--on-primary-text)' }}
+            >
+              {(user.display_name || user.email).charAt(0).toUpperCase()}
+            </div>
+          )}
           <div className="min-w-0">
             <div style={{ fontWeight: 700, fontSize: '.82rem' }} className="truncate">
               {user.display_name || user.email.split('@')[0]}

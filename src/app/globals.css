@@ -41,38 +41,38 @@
 }
 
 [data-theme="dark"] {
-  --primary:           #59de9b;
-  --primary-container: #00a86b;
-  --primary-light:     #0e2b1c;
-  --on-primary-text:   #003822;
+  --primary:           #34d399;
+  --primary-container: #10b981;
+  --primary-light:     #064e3b;
+  --on-primary-text:   #ffffff;
 
-  --bg-app:            #0f1510;
-  --sidebar-bg:        #181f1a;
-  --card-bg:           #1d2620;
-  --card-bg-hover:     #243029;
-  --card-border:       #2e3d33;
-  --card-shadow:       0 2px 8px rgba(0,0,0,.4);
+  --bg-app:            #030712;
+  --sidebar-bg:        #0b0f19;
+  --card-bg:           #111827;
+  --card-bg-hover:     #1f2937;
+  --card-border:       #1f2937;
+  --card-shadow:       0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
 
-  --text-main:         #d6f0e1;
-  --text-muted:        #88a898;
-  --text-faint:        #567568;
+  --text-main:         #f9fafb;
+  --text-muted:        #9ca3af;
+  --text-faint:        #4b5563;
 
-  --progress-track:    #1e3528;
-  --progress-fill:     #59de9b;
+  --progress-track:    #374151;
+  --progress-fill:     #34d399;
 
-  --error-color:       #ff6b6b;
-  --error-text:        #ffaaaa;
-  --error-bg:          #2d1111;
-  --success-color:     #59de9b;
-  --success-text:      #d6f0e1;
-  --success-bg:        #0e2b1c;
-  --warning-color:     #ffd36b;
-  --warning-light:     #2d2211;
+  --error-color:       #ef4444;
+  --error-text:        #fca5a5;
+  --error-bg:          #450a0a;
+  --success-color:     #34d399;
+  --success-text:      #a7f3d0;
+  --success-bg:        #064e3b;
+  --warning-color:     #f59e0b;
+  --warning-light:     #451a03;
 
-  --srs-again-bg: #2d1111; --srs-again-text: #ff8888; --srs-again-border: #5a2020;
-  --srs-hard-bg:  #2d2211; --srs-hard-text:  #ffd36b; --srs-hard-border:  #5a4415;
-  --srs-good-bg:  #0e2b1c; --srs-good-text:  #59de9b; --srs-good-border:  #1e5c35;
-  --srs-easy-bg:  #101a2d; --srs-easy-text:  #90c0ff; --srs-easy-border:  #1d3a6a;
+  --srs-again-bg: #450a0a; --srs-again-text: #fca5a5; --srs-again-border: #991b1b;
+  --srs-hard-bg:  #451a03; --srs-hard-text:  #fcd34d; --srs-hard-border:  #92400e;
+  --srs-good-bg:  #064e3b; --srs-good-text:  #34d399; --srs-good-border:  #065f46;
+  --srs-easy-bg:  #1e1b4b; --srs-easy-text:  #a5b4fc; --srs-easy-border:  #3730a3;
 }
 
 [data-theme="ocean"] {
@@ -455,43 +455,106 @@ html, body {
 /* The main card container */
 .quizlet-card-container {
   width: 100%;
-  perspective: 1200px;
-  cursor: pointer;
+  max-width: 100%;
+  perspective: 1500px;
+  cursor: grab;
   user-select: none;
+  touch-action: none;
+  position: relative;
+}
+.quizlet-card-container:active {
+  cursor: grabbing;
 }
 
 .quizlet-card-inner {
   width: 100%;
-  min-height: 300px;
+  height: 420px;
   position: relative;
-  transition: transform .55s cubic-bezier(.4,0,.2,1);
   transform-style: preserve-3d;
-}
-.quizlet-card-container.flipped .quizlet-card-inner {
-  transform: rotateY(180deg);
+  will-change: transform;
 }
 
 .quizlet-card-face {
   position: absolute;
   width: 100%;
-  min-height: 300px;
+  height: 100%;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  border-radius: 20px;
+  border-radius: 28px;
   border: 1.5px solid var(--card-border);
-  box-shadow: 0 2px 6px rgba(0,0,0,.06), 0 8px 32px rgba(0,0,0,.06);
+  box-shadow: var(--card-shadow);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: .6rem;
+  gap: .8rem;
   padding: 2rem 1.75rem;
   background: var(--card-bg);
 }
 .quizlet-card-face.back {
   transform: rotateY(180deg);
   background: var(--primary-light);
+  border-color: var(--primary);
 }
+
+@media (max-width: 640px) {
+  .quizlet-card-inner {
+    height: 380px;
+  }
+  .quizlet-card-face {
+    padding: 1.25rem 1rem;
+    border-radius: 18px;
+    gap: 0.5rem;
+  }
+  .qcard-hz {
+    font-size: 3.2rem !important;
+  }
+  .qcard-py {
+    font-size: 1.05rem !important;
+  }
+  .qcard-vi {
+    font-size: 0.9rem !important;
+    max-width: 280px;
+  }
+  .qcard-example {
+    padding: 0.4rem 0.6rem !important;
+    margin-top: 0.2rem !important;
+    border-radius: 8px !important;
+  }
+  .qcard-example-zh {
+    font-size: 0.85rem !important;
+  }
+}
+
+/* Swiping Stamps */
+.swipe-stamp {
+  position: absolute;
+  top: 2rem;
+  border: 4px solid;
+  border-radius: 12px;
+  padding: 0.4rem 1rem;
+  font-size: 1.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 50;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+.swipe-stamp.right {
+  right: 2rem;
+  border-color: #2ecc71;
+  color: #2ecc71;
+  transform: rotate(-10deg);
+}
+.swipe-stamp.left {
+  left: 2rem;
+  border-color: #e74c3c;
+  color: #e74c3c;
+  transform: rotate(10deg);
+}
+
 
 .qcard-label {
   font-size: .7rem;
@@ -722,3 +785,30 @@ html, body {
 }
 .progress-bar-container { height: 6px; background: var(--progress-track); border-radius: 999px; overflow: hidden; }
 .progress-bar-fill      { height: 100%; background: var(--progress-fill); border-radius: 999px; transition: width .8s cubic-bezier(.22,1,.36,1); }
+
+/* loading spinner */
+.spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  border-top-color: var(--primary);
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Glassmorphism card variant */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+[data-theme="dark"] .glass-card {
+  background: rgba(17, 24, 39, 0.6);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
