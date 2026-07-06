@@ -253,7 +253,7 @@ export default function App() {
         display_name: session.user.name,
         exp: (session.user as any).exp ?? 0,
         max_combo: (session.user as any).maxCombo ?? 0,
-        streak: (session.user as any).streak ?? 0,
+        streak: Math.max(1, (session.user as any).streak ?? 1),
         image: session.user.image,
       };
       setUser(prev => {

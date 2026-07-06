@@ -4,6 +4,7 @@
 import { query } from '@/lib/db';
 import { getCurrentUser, loginUser, registerUser, logout } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
+import { Passage } from './types';
 
 // Authentication Actions
 export async function registerNewUser(email: string, password: string, displayName: string) {
@@ -349,31 +350,23 @@ export async function recordFlashcardReview(cardId: number, score: number) {
 
 // Preset Reading passages for HSK
 export async function getReadingPassages() {
-  const passages = [
-    {
-      id: 1,
-      level: "HSK1",
-      title: "Lời chào và gia đình (Chào hỏi)",
-      zh: "你好|！|我|叫|王明|。|我|家|有|三|口|人|，|爸爸|、|妈妈|和|我|。|我们|住在|北京|。|我|喜欢|喝|茶|，|妈妈|喜欢|喝|咖啡|。|你|家|有|几|口|人|？",
-      vi: "Chào bạn! Tôi tên là Vương Minh. Nhà tôi có ba người, bố, mẹ và tôi. Chúng tôi sống ở Bắc Kinh. Tôi thích uống trà, mẹ thích uống cà phê. Nhà bạn có mấy người?",
-    },
-    {
-      id: 2,
-      level: "HSK2",
-      title: "Thời tiết và kỳ nghỉ (Du lịch)",
-      zh: "今天|天气|非常好|。|我和|朋友|打算|去|商店|买|一些|新|衣服|，|然后|去|公园|跑步|。|明天|是|星期六|，|我们|想|去|旅游|。|听说|明天|会|下雨|，|所以|我们|准备|带|雨伞|。|你|喜欢|下雨天|吗|？",
-      vi: "Hôm nay thời tiết rất tốt. Tôi và bạn bè dự định đi cửa hàng mua một ít quần áo mới, sau đó đi công viên chạy bộ. Ngày mai là thứ Bảy, chúng tôi muốn đi du lịch. Nghe nói ngày mai trời sẽ mưa, nên chúng tôi chuẩn bị mang ô. Bạn có thích ngày mưa không?",
-    },
-    {
-      id: 3,
-      level: "HSK3",
-      title: "Một ngày làm việc bận rộn (Công sở)",
-      zh: "我|每天|早上|七点|起床|，|然后|坐|地铁|去|公司|上班|。|虽然|工作|很忙|，|但是|同事|们|都|非常|热情|，|经常|帮助|我|。|中午|我们|在|公司的|食堂|吃|午饭|。|下班|以后|，|我|喜欢|去|图书馆|看|一些|历史|书|。|只有|不断|学习|，|才能|提高|自己|的|能力|。",
-      vi: "Mỗi ngày tôi dậy lúc bảy giờ sáng, sau đó đi tàu điện ngầm đến công ty làm việc. Mặc dù công việc rất bận rộn, nhưng các đồng nghiệp đều rất nhiệt tình, thường giúp đỡ tôi. Buổi trưa chúng tôi ăn trưa ở nhà ăn công ty. Sau khi tan làm, tôi thích đi thư viện đọc sách lịch sử. Chỉ có không ngừng học hỏi mới nâng cao được năng lực của bản thân.",
-    }
-  ];
-  
-  return { success: true, passages };
+  try {
+    const res = await query(`
+      SELECT 
+        id, 
+        category, 
+        group_name as "groupName", 
+        chapter_number as "chapterNumber", 
+        title, 
+        zh, 
+        vi 
+      FROM passages
+      ORDER BY category ASC, group_name ASC, chapter_number ASC, id ASC
+    `);
+    return { success: true, passages: res.rows as Passage[] };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
 }
 
 // ─── HSK Vocabulary Catalog Actions ───
@@ -467,35 +460,37 @@ export async function getDailyActivity() {
   if (!user) return { success: false, error: "Unauthorized" };
 
   try {
-    // Questions answered per day in last 7 days
+    // Questions answered per day in last 7 days (localized to Vietnam timezone)
     const activityRes = await query(`
       SELECT
-        DATE(completed_at) as day,
-        COUNT(*) as questions_done
+        TO_CHAR(completed_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYYY-MM-DD') as day,
+        COUNT(*)::integer as questions_done
       FROM user_progress
       WHERE user_id = $1::varchar
         AND completed_at >= NOW() - INTERVAL '7 days'
-      GROUP BY DATE(completed_at)
+      GROUP BY day
       ORDER BY day ASC
     `, [user.id]);
 
-    // Build a map of day -> count for last 7 calendar days
-    const today = new Date();
+    // Build a map of day -> count for last 7 calendar days in Vietnam (UTC+7)
+    const today = new Date(Date.now() + 7 * 60 * 60 * 1000);
     const days: { label: string; value: number; date: string }[] = [];
     const dowLabels = ['CN','T2','T3','T4','T5','T6','T7'];
 
     for (let i = 6; i >= 0; i--) {
       const d = new Date(today);
-      d.setDate(today.getDate() - i);
-      const dateStr = d.toISOString().split('T')[0]; // YYYY-MM-DD
-      const label = dowLabels[d.getDay()];
+      d.setUTCDate(today.getUTCDate() - i);
+      const year = d.getUTCFullYear();
+      const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+      const date = String(d.getUTCDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${date}`;
+      const label = dowLabels[d.getUTCDay()];
       days.push({ label, value: 0, date: dateStr });
     }
 
     for (const row of activityRes.rows) {
-      const rowDate = new Date(row.day).toISOString().split('T')[0];
-      const entry = days.find(d => d.date === rowDate);
-      if (entry) entry.value = parseInt(row.questions_done, 10);
+      const entry = days.find(d => d.date === row.day);
+      if (entry) entry.value = row.questions_done;
     }
 
     return { success: true, days };

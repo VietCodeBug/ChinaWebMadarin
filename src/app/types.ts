@@ -14,7 +14,7 @@ export interface Unit    { name: string; total: number; completed: number; }
 export interface Question { id: number; vi: string; zh: string; pinyin: string; viPlus?: string; }
 export interface Vocab   { id: number; word: string; pinyin: string; meaning: string; status: string; }
 export interface Flashcard { id: number; zh: string; vi: string; pinyin: string; intervalDays: number; easeFactor: number; }
-export interface Passage { id: number; level: string; title: string; zh: string; vi: string; }
+export interface Passage { id: number; category: string; groupName: string; chapterNumber?: number | null; title: string; zh: string; vi: string; }
 export interface HSKWord {
   id: number; word: string; pinyin: string; wordType: string;
   meaning: string; exampleZh: string; examplePinyin: string; exampleVi: string;

@@ -13,6 +13,27 @@ export const auth = betterAuth({
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         },
     },
+    user: {
+        additionalFields: {
+            exp: {
+                type: "number",
+                defaultValue: 0
+            },
+            maxCombo: {
+                type: "number",
+                fieldName: "max_combo",
+                defaultValue: 0
+            },
+            streak: {
+                type: "number",
+                defaultValue: 1
+            },
+            lastActive: {
+                type: "date",
+                fieldName: "last_active"
+            }
+        }
+    }
 });
 
 export interface User {
@@ -38,7 +59,7 @@ export async function getCurrentUser(): Promise<User | null> {
       display_name: session.user.name,
       exp: (session.user as any).exp ?? 0,
       max_combo: (session.user as any).maxCombo ?? 0,
-      streak: (session.user as any).streak ?? 0,
+      streak: Math.max(1, (session.user as any).streak ?? 1),
       image: session.user.image,
     };
     
@@ -75,7 +96,7 @@ async function updateStreakIfNeeded(user: User, lastActiveVal: any) {
   const oneDay = 24 * 60 * 60 * 1000;
   const diffDays = Math.round(Math.abs((now.getTime() - lastActive.getTime()) / oneDay));
   
-  let newStreak = user.streak;
+  let newStreak = Math.max(1, user.streak);
   if (diffDays === 1) {
     newStreak += 1;
   } else if (diffDays > 1) {

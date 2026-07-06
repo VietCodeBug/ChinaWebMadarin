@@ -59,3 +59,14 @@ export const userFolders = pgTable("user_folders", {
 	name: text("name").notNull(),
 	createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const passages = pgTable("passages", {
+	id: serial("id").primaryKey(),
+	category: text("category").notNull(),
+	groupName: text("group_name").notNull(),
+	chapterNumber: integer("chapter_number"),
+	title: text("title").notNull(),
+	zh: text("zh").notNull(),
+	vi: text("vi").notNull(),
+	createdAt: timestamp("created_at").defaultNow(),
+});
